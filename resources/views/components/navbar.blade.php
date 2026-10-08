@@ -22,8 +22,8 @@
         <a href="{{ route('home') }}" class="flex items-center gap-3">
             <x-logo />
             <span>
-                <span class="block text-[11px] font-bold uppercase tracking-widest text-emerald-700">SMP Negeri</span>
-                <span class="block text-base font-extrabold leading-tight text-navy-900 sm:text-lg">Satu Atap I Sidamulih</span>
+                <span class="block text-[11px] font-bold uppercase tracking-widest text-emerald-700">Sekolah {{ $settings['school.status'] ?? 'Negeri' }}</span>
+                <span class="block text-base font-extrabold leading-tight text-navy-900 sm:text-lg">{{ $settings['school.short_name'] ?? $settings['school.name'] ?? 'SMPN Satu Atap I Sidamulih' }}</span>
             </span>
         </a>
 
