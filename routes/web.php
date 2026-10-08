@@ -1,0 +1,123 @@
+<?php
+
+use App\Http\Controllers\AcademicController;
+use App\Http\Controllers\Admin\AnnouncementController as AdminAnnouncementController;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\ContactMessageController as AdminContactMessageController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ExtracurricularController as AdminExtracurricularController;
+use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
+use App\Http\Controllers\Admin\NewsController as AdminNewsController;
+use App\Http\Controllers\Admin\PpdbRegistrationController as AdminPpdbRegistrationController;
+use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
+use App\Http\Controllers\Admin\SettingController as AdminSettingController;
+use App\Http\Controllers\Admin\StudentStatisticController as AdminStudentStatisticController;
+use App\Http\Controllers\Admin\TeacherController as AdminTeacherController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\PpdbController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SitemapController;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', HomeController::class)->name('home');
+Route::get('/profil', ProfileController::class)->name('profile');
+Route::get('/akademik', AcademicController::class)->name('academic');
+
+Route::get('/berita', [NewsController::class, 'index'])->name('news.index');
+Route::get('/berita/{news:slug}', [NewsController::class, 'show'])->name('news.show');
+
+Route::get('/pengumuman', AnnouncementController::class)->name('announcements');
+
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
+
+Route::get('/galeri', GalleryController::class)->name('gallery');
+
+Route::get('/ppdb', [PpdbController::class, 'index'])->name('ppdb.index');
+Route::post('/ppdb', [PpdbController::class, 'store'])->name('ppdb.store');
+Route::get('/ppdb/cek', [PpdbController::class, 'check'])->name('ppdb.check');
+Route::get('/ppdb/cetak/{registrationNumber}', [PpdbController::class, 'print'])->name('ppdb.print');
+
+Route::get('/kontak', [ContactController::class, 'index'])->name('contact.index');
+Route::post('/kontak', [ContactController::class, 'store'])->name('contact.store');
+
+Route::middleware('guest')->group(function (): void {
+    Route::get('/login', [LoginController::class, 'create'])->name('login');
+    Route::post('/login', [LoginController::class, 'store'])->name('login.store');
+});
+
+Route::post('/logout', [LoginController::class, 'destroy'])->middleware('auth')->name('logout');
+
+Route::middleware('auth')->prefix('admin')->name('admin.')->group(function (): void {
+    Route::middleware('role:admin,operator,guru')->group(function (): void {
+        Route::get('/', DashboardController::class)->name('dashboard');
+
+        Route::get('/profil-saya', [AdminProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profil-saya', [AdminProfileController::class, 'update'])->name('profile.update');
+
+        Route::resource('berita', AdminNewsController::class)
+            ->parameters(['berita' => 'news'])
+            ->names('news')
+            ->except(['show']);
+
+        Route::resource('galeri', AdminGalleryController::class)
+            ->parameters(['galeri' => 'gallery'])
+            ->names('galleries')
+            ->except(['show']);
+    });
+
+    Route::middleware('role:admin,operator')->group(function (): void {
+        Route::get('/pengaturan', [AdminSettingController::class, 'index'])->name('settings');
+        Route::put('/pengaturan', [AdminSettingController::class, 'update'])->name('settings.update');
+
+        Route::get('/guru/template', [AdminTeacherController::class, 'template'])->name('teachers.template');
+        Route::get('/guru/export', [AdminTeacherController::class, 'export'])->name('teachers.export');
+        Route::post('/guru/import', [AdminTeacherController::class, 'import'])->name('teachers.import');
+
+        Route::resource('guru', AdminTeacherController::class)
+            ->parameters(['guru' => 'teacher'])
+            ->names('teachers')
+            ->except(['show']);
+
+        Route::resource('ekstrakurikuler', AdminExtracurricularController::class)
+            ->parameters(['ekstrakurikuler' => 'extracurricular'])
+            ->names('extracurriculars')
+            ->except(['show']);
+
+        Route::resource('pengumuman', AdminAnnouncementController::class)
+            ->parameters(['pengumuman' => 'announcement'])
+            ->names('announcements')
+            ->except(['show']);
+
+        Route::get('/kategori', [AdminCategoryController::class, 'index'])->name('categories.index');
+        Route::post('/kategori', [AdminCategoryController::class, 'store'])->name('categories.store');
+        Route::delete('/kategori/{category}', [AdminCategoryController::class, 'destroy'])->name('categories.destroy');
+
+        Route::get('/ppdb', [AdminPpdbRegistrationController::class, 'index'])->name('ppdb.index');
+        Route::get('/ppdb/export', [AdminPpdbRegistrationController::class, 'export'])->name('ppdb.export');
+        Route::get('/ppdb/{ppdb}', [AdminPpdbRegistrationController::class, 'show'])->name('ppdb.show');
+        Route::patch('/ppdb/{ppdb}', [AdminPpdbRegistrationController::class, 'update'])->name('ppdb.update');
+        Route::delete('/ppdb/{ppdb}', [AdminPpdbRegistrationController::class, 'destroy'])->name('ppdb.destroy');
+
+        Route::get('/pesan', [AdminContactMessageController::class, 'index'])->name('messages.index');
+        Route::patch('/pesan/{message}', [AdminContactMessageController::class, 'update'])->name('messages.update');
+        Route::delete('/pesan/{message}', [AdminContactMessageController::class, 'destroy'])->name('messages.destroy');
+
+        Route::resource('data-siswa', AdminStudentStatisticController::class)
+            ->parameters(['data-siswa' => 'statistic'])
+            ->names('statistics')
+            ->except(['show']);
+    });
+
+    Route::middleware('role:admin')->group(function (): void {
+        Route::resource('pengguna', AdminUserController::class)
+            ->parameters(['pengguna' => 'user'])
+            ->names('users')
+            ->except(['show']);
+    });
+});

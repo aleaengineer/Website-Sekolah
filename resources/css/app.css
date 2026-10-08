@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@theme {
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-serif: 'Lora', ui-serif, Georgia, serif;
+
+    --color-navy-50: #eef4fa;
+    --color-navy-100: #d8e6f3;
+    --color-navy-200: #b0cde6;
+    --color-navy-300: #7fadd4;
+    --color-navy-400: #4d88bd;
+    --color-navy-500: #2b6aa3;
+    --color-navy-600: #1c5488;
+    --color-navy-700: #15436e;
+    --color-navy-800: #0f3357;
+    --color-navy-900: #0b2a4a;
+    --color-navy-950: #071e36;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    @apply bg-slate-50 text-slate-800 antialiased;
+}
+
+.rich-text p {
+    @apply mb-4 leading-relaxed;
+}
+
+.admin-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(255 255 255 / 0.2) transparent;
+}
+
+.admin-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.admin-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.admin-scroll::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, rgb(245 185 66 / 0.6), rgb(16 185 129 / 0.6));
+    border-radius: 9999px;
+}
+
+.admin-scroll::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(to bottom, rgb(245 185 66 / 0.9), rgb(16 185 129 / 0.9));
+}
