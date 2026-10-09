@@ -9,7 +9,7 @@
     <div class="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-amber-400/20 blur-3xl" aria-hidden="true"></div>
     <div class="absolute -bottom-32 -left-16 h-96 w-96 rounded-full bg-emerald-500/20 blur-3xl" aria-hidden="true"></div>
 
-    <div class="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 sm:py-20 lg:grid-cols-2 lg:px-8 lg:py-24">
+    <div class="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-2 lg:px-8 lg:py-20">
         <div>
             <div class="flex flex-wrap gap-2">
                 <span class="rounded-full bg-amber-400 px-4 py-1.5 text-xs font-extrabold uppercase tracking-widest text-navy-950">Akreditasi {{ $settings['school.accreditation'] ?? 'B' }}</span>
