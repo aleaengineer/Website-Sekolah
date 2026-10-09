@@ -74,6 +74,20 @@
                     </div>
                 </div>
 
+                <div>
+                    <label for="captcha" class="mb-1.5 block text-sm font-bold text-navy-900">Verifikasi: berapa hasil <span id="captcha-question" class="font-mono text-base">{{ $captchaQuestion ?? '' }} = ?</span></label>
+                    <div class="flex gap-2">
+                        <input type="number" name="captcha" id="captcha" required placeholder="Jawaban angka"
+                               class="grow rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-200">
+                        <button type="button" id="reload-captcha" title="Ganti soal baru" aria-label="Ganti soal captcha baru"
+                                class="flex shrink-0 items-center gap-1.5 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-navy-900 transition hover:bg-slate-100">
+                            <svg id="reload-icon" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
+                            Baru
+                        </button>
+                    </div>
+                    @error('captcha')<p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p>@enderror
+                </div>
+
                 <label class="flex w-fit cursor-pointer items-center gap-2 text-sm text-slate-600">
                     <input type="checkbox" name="remember" value="1" @checked(old('remember')) class="h-4 w-4 rounded accent-emerald-600">
                     Ingat saya di perangkat ini
@@ -97,6 +111,25 @@
             document.getElementById('eye-open')?.classList.toggle('hidden', show);
             document.getElementById('eye-closed')?.classList.toggle('hidden', !show);
             this.setAttribute('aria-label', show ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi');
+        });
+
+        document.getElementById('reload-captcha')?.addEventListener('click', async function () {
+            const icon = document.getElementById('reload-icon');
+            const label = document.getElementById('captcha-question');
+            const input = document.getElementById('captcha');
+            icon?.classList.add('animate-spin');
+
+            try {
+                const response = await fetch("{{ route('captcha.refresh', 'login') }}", { headers: { 'Accept': 'application/json' } });
+                const data = await response.json();
+                label.textContent = data.question + ' = ?';
+                input.value = '';
+                input.focus();
+            } catch (e) {
+                label.textContent = 'gagal memuat, coba lagi';
+            } finally {
+                icon?.classList.remove('animate-spin');
+            }
         });
     </script>
 </body>

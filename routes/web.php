@@ -24,6 +24,7 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\CaptchaController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\HomeController;
@@ -51,6 +52,11 @@ Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 Route::get('/galeri', GalleryController::class)->name('gallery');
 
 Route::get('/cari', [SearchController::class, 'index'])->name('search');
+
+Route::get('/captcha/{key}', CaptchaController::class)
+    ->whereIn('key', ['login', 'ppdb', 'contact'])
+    ->middleware('throttle:30,1')
+    ->name('captcha.refresh');
 
 Route::get('/ppdb', [PpdbController::class, 'index'])->name('ppdb.index');
 Route::post('/ppdb', [PpdbController::class, 'store'])->name('ppdb.store');

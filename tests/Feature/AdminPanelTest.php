@@ -76,9 +76,10 @@ class AdminPanelTest extends TestCase
     {
         $admin = $this->admin();
 
-        $response = $this->post(route('login.store'), [
+        $response = $this->withSession(['captcha_login' => 7])->post(route('login.store'), [
             'email' => $admin->email,
             'password' => 'password',
+            'captcha' => 7,
         ]);
 
         $response->assertRedirect(route('admin.dashboard'));
@@ -90,9 +91,10 @@ class AdminPanelTest extends TestCase
     {
         $admin = $this->admin();
 
-        $this->post(route('login.store'), [
+        $this->withSession(['captcha_login' => 7])->post(route('login.store'), [
             'email' => $admin->email,
             'password' => 'salah-sandi',
+            'captcha' => 7,
         ])->assertSessionHasErrors('email');
 
         $this->assertGuest();
@@ -215,7 +217,7 @@ class AdminPanelTest extends TestCase
 
         $this->assertDatabaseHas('users', ['id' => $admin->id, 'name' => 'Nama Baru']);
         $this->post(route('logout'));
-        $this->post(route('login.store'), ['email' => $admin->email, 'password' => 'sandi-baru-123'])
+        $this->withSession(['captcha_login' => 7])->post(route('login.store'), ['email' => $admin->email, 'password' => 'sandi-baru-123', 'captcha' => 7])
             ->assertRedirect(route('admin.dashboard'));
     }
 

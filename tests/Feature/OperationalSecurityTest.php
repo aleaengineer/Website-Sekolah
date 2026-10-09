@@ -65,13 +65,62 @@ class OperationalSecurityTest extends TestCase
         $this->assertDatabaseCount('contact_messages', 0);
     }
 
+    public function test_login_rejects_wrong_captcha(): void
+    {
+        $admin = $this->admin();
+
+        $this->withSession(['captcha_login' => 7])->post(route('login.store'), [
+            'email' => $admin->email,
+            'password' => 'password',
+            'captcha' => 9,
+        ])->assertSessionHasErrors('captcha');
+
+        $this->assertGuest();
+    }
+
+    public function test_login_is_throttled_after_repeated_failures(): void
+    {
+        $admin = $this->admin();
+
+        for ($i = 0; $i < 5; $i++) {
+            $this->withSession(['captcha_login' => 7])->post(route('login.store'), [
+                'email' => $admin->email,
+                'password' => 'salah-sandi',
+                'captcha' => 7,
+            ])->assertSessionHasErrors('email');
+        }
+
+        $this->withSession(['captcha_login' => 7])->post(route('login.store'), [
+            'email' => $admin->email,
+            'password' => 'password',
+            'captcha' => 7,
+        ])->assertSessionHasErrors('email');
+
+        $this->assertGuest();
+    }
+
+    public function test_captcha_refresh_returns_new_question(): void
+    {
+        $first = $this->getJson(route('captcha.refresh', 'login'))
+            ->assertOk()
+            ->assertJsonStructure(['question'])
+            ->json('question');
+
+        $this->assertMatchesRegularExpression('/^\d+ \+ \d+$/', $first);
+
+        $second = $this->getJson(route('captcha.refresh', 'login'))->json('question');
+
+        $this->assertMatchesRegularExpression('/^\d+ \+ \d+$/', $second);
+    }
+
     public function test_login_and_logout_are_logged(): void
     {
         $admin = $this->admin();
 
-        $this->post(route('login.store'), [
+        $this->withSession(['captcha_login' => 7])->post(route('login.store'), [
             'email' => $admin->email,
             'password' => 'password',
+            'captcha' => 7,
         ])->assertRedirect(route('admin.dashboard'));
 
         $this->assertDatabaseHas('activity_logs', [
