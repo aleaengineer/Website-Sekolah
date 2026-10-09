@@ -18,6 +18,8 @@ class User extends Authenticatable
 
     public const ROLE_OPERATOR = 'operator';
 
+    public const ROLE_PANITIA = 'panitia';
+
     public const ROLE_GURU = 'guru';
 
     /** @use HasFactory<UserFactory> */

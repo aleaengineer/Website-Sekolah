@@ -314,4 +314,32 @@ class AdminPanelTest extends TestCase
         $this->actingAs($guru)->get(route('admin.announcements.index'))->assertForbidden();
         $this->actingAs($guru)->get(route('admin.categories.index'))->assertForbidden();
     }
+
+    public function test_panitia_can_run_ppdb_workflow_only(): void
+    {
+        $panitia = User::factory()->create(['role' => User::ROLE_PANITIA]);
+
+        foreach (['admin.dashboard', 'admin.ppdb.index', 'admin.waves.index', 'admin.jalurs.index', 'admin.messages.index', 'admin.profile.edit'] as $route) {
+            $this->actingAs($panitia)->get(route($route))->assertOk();
+        }
+
+        foreach (['admin.news.index', 'admin.galleries.index', 'admin.teachers.index', 'admin.announcements.index', 'admin.settings', 'admin.users.index', 'admin.activity-logs.index', 'admin.backups.index'] as $route) {
+            $this->actingAs($panitia)->get(route($route))->assertForbidden();
+        }
+    }
+
+    public function test_admin_can_create_panitia_user(): void
+    {
+        $this->actingAs($this->admin())->post(route('admin.users.store'), [
+            'name' => 'Panitia PPDB',
+            'email' => 'panitia@satap1sidamulih.sch.id',
+            'role' => User::ROLE_PANITIA,
+            'password' => 'rahasia123',
+        ])->assertRedirect(route('admin.users.index'));
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'panitia@satap1sidamulih.sch.id',
+            'role' => User::ROLE_PANITIA,
+        ]);
+    }
 }

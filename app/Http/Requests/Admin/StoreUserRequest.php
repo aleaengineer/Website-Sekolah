@@ -29,7 +29,7 @@ class StoreUserRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'email', 'max:150', Rule::unique('users', 'email')->ignore($user)],
-            'role' => ['required', Rule::in([User::ROLE_ADMIN, User::ROLE_OPERATOR, User::ROLE_GURU])],
+            'role' => ['required', Rule::in([User::ROLE_ADMIN, User::ROLE_OPERATOR, User::ROLE_PANITIA, User::ROLE_GURU])],
             'password' => [$user ? 'nullable' : 'required', 'string', 'min:8', 'max:100'],
         ];
     }

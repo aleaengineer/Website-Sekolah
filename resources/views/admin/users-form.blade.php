@@ -29,7 +29,7 @@
         <label for="role" class="mb-1.5 block text-sm font-bold text-navy-900">Role</label>
         <select name="role" id="role" required
                 class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200">
-            @foreach (['admin' => 'Admin — akses penuh termasuk kelola pengguna', 'operator' => 'Operator — semua konten, tanpa kelola pengguna', 'guru' => 'Guru — hanya Berita & Galeri'] as $value => $label)
+            @foreach (['admin' => 'Admin — akses penuh termasuk kelola pengguna', 'operator' => 'Operator — semua konten, tanpa kelola pengguna', 'panitia' => 'Panitia — khusus PPDB, gelombang, jalur & pesan', 'guru' => 'Guru — hanya Berita & Galeri'] as $value => $label)
                 <option value="{{ $value }}" @selected(old('role', $editedUser->role ?? 'operator') === $value)>{{ $label }}</option>
             @endforeach
         </select>

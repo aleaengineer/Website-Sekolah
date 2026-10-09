@@ -68,12 +68,14 @@ Route::middleware('guest')->group(function (): void {
 Route::post('/logout', [LoginController::class, 'destroy'])->middleware('auth')->name('logout');
 
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function (): void {
-    Route::middleware('role:admin,operator,guru')->group(function (): void {
+    Route::middleware('role:admin,operator,guru,panitia')->group(function (): void {
         Route::get('/', DashboardController::class)->name('dashboard');
 
         Route::get('/profil-saya', [AdminProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profil-saya', [AdminProfileController::class, 'update'])->name('profile.update');
+    });
 
+    Route::middleware('role:admin,operator,guru')->group(function (): void {
         Route::resource('berita', AdminNewsController::class)
             ->parameters(['berita' => 'news'])
             ->names('news')
@@ -83,6 +85,28 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function (): v
             ->parameters(['galeri' => 'gallery'])
             ->names('galleries')
             ->except(['show']);
+    });
+
+    Route::middleware('role:admin,operator,panitia')->group(function (): void {
+        Route::resource('gelombang', AdminPpdbWaveController::class)
+            ->parameters(['gelombang' => 'wave'])
+            ->names('waves')
+            ->except(['show']);
+
+        Route::resource('jalur', AdminPpdbJalurController::class)
+            ->parameters(['jalur' => 'jalur'])
+            ->names('jalurs')
+            ->except(['show']);
+
+        Route::get('/ppdb', [AdminPpdbRegistrationController::class, 'index'])->name('ppdb.index');
+        Route::get('/ppdb/export', [AdminPpdbRegistrationController::class, 'export'])->name('ppdb.export');
+        Route::get('/ppdb/{ppdb}', [AdminPpdbRegistrationController::class, 'show'])->name('ppdb.show');
+        Route::patch('/ppdb/{ppdb}', [AdminPpdbRegistrationController::class, 'update'])->name('ppdb.update');
+        Route::delete('/ppdb/{ppdb}', [AdminPpdbRegistrationController::class, 'destroy'])->name('ppdb.destroy');
+
+        Route::get('/pesan', [AdminContactMessageController::class, 'index'])->name('messages.index');
+        Route::patch('/pesan/{message}', [AdminContactMessageController::class, 'update'])->name('messages.update');
+        Route::delete('/pesan/{message}', [AdminContactMessageController::class, 'destroy'])->name('messages.destroy');
     });
 
     Route::middleware('role:admin,operator')->group(function (): void {
@@ -123,31 +147,11 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function (): v
             ->names('documents')
             ->except(['show']);
 
-        Route::resource('gelombang', AdminPpdbWaveController::class)
-            ->parameters(['gelombang' => 'wave'])
-            ->names('waves')
-            ->except(['show']);
-
-        Route::resource('jalur', AdminPpdbJalurController::class)
-            ->parameters(['jalur' => 'jalur'])
-            ->names('jalurs')
-            ->except(['show']);
-
         Route::get('/kategori', [AdminCategoryController::class, 'index'])->name('categories.index');
         Route::post('/kategori', [AdminCategoryController::class, 'store'])->name('categories.store');
         Route::get('/kategori/{category}/edit', [AdminCategoryController::class, 'edit'])->name('categories.edit');
         Route::put('/kategori/{category}', [AdminCategoryController::class, 'update'])->name('categories.update');
         Route::delete('/kategori/{category}', [AdminCategoryController::class, 'destroy'])->name('categories.destroy');
-
-        Route::get('/ppdb', [AdminPpdbRegistrationController::class, 'index'])->name('ppdb.index');
-        Route::get('/ppdb/export', [AdminPpdbRegistrationController::class, 'export'])->name('ppdb.export');
-        Route::get('/ppdb/{ppdb}', [AdminPpdbRegistrationController::class, 'show'])->name('ppdb.show');
-        Route::patch('/ppdb/{ppdb}', [AdminPpdbRegistrationController::class, 'update'])->name('ppdb.update');
-        Route::delete('/ppdb/{ppdb}', [AdminPpdbRegistrationController::class, 'destroy'])->name('ppdb.destroy');
-
-        Route::get('/pesan', [AdminContactMessageController::class, 'index'])->name('messages.index');
-        Route::patch('/pesan/{message}', [AdminContactMessageController::class, 'update'])->name('messages.update');
-        Route::delete('/pesan/{message}', [AdminContactMessageController::class, 'destroy'])->name('messages.destroy');
 
         Route::resource('data-siswa', AdminStudentStatisticController::class)
             ->parameters(['data-siswa' => 'statistic'])
