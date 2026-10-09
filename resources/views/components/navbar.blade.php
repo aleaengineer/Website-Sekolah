@@ -37,7 +37,7 @@
             @endforeach
             <form action="{{ route('search') }}" method="GET" class="ml-1 flex items-center" role="search">
                 <input type="text" name="q" value="{{ request('q') }}" required minlength="2" maxlength="100" placeholder="Cari..."
-                       class="w-32 rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none transition focus:w-44 focus:border-emerald-500">
+                       class="w-24 rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none transition focus:w-36 focus:border-emerald-500">
             </form>
             <a href="{{ route('ppdb.index') }}"
                class="ml-2 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 px-5 py-2.5 text-sm font-bold text-navy-950 shadow transition hover:brightness-105">
