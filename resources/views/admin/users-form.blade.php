@@ -26,13 +26,26 @@
     </div>
 
     <div>
-        <label for="role" class="mb-1.5 block text-sm font-bold text-navy-900">Role</label>
-        <select name="role" id="role" required
-                class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200">
-            @foreach (['admin' => 'Admin — akses penuh termasuk kelola pengguna', 'operator' => 'Operator — semua konten, tanpa kelola pengguna', 'panitia' => 'Panitia — khusus PPDB, gelombang, jalur & pesan', 'guru' => 'Guru — hanya Berita & Galeri'] as $value => $label)
-                <option value="{{ $value }}" @selected(old('role', $editedUser->role ?? 'operator') === $value)>{{ $label }}</option>
+        <span class="mb-1.5 block text-sm font-bold text-navy-900">Role</span>
+        @php
+            $roles = [
+                'admin' => ['Admin', 'Akses penuh termasuk kelola pengguna, log, dan backup'],
+                'operator' => ['Operator', 'Semua konten, tanpa kelola pengguna'],
+                'panitia' => ['Panitia', 'Khusus PPDB, gelombang, jalur, dan pesan'],
+                'guru' => ['Guru', 'Hanya Berita dan Galeri'],
+            ];
+        @endphp
+        <div class="grid gap-2 sm:grid-cols-2">
+            @foreach ($roles as $value => [$label, $hint])
+                <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200 px-4 py-3 transition has-checked:border-emerald-500 has-checked:bg-emerald-50 has-checked:ring-2 has-checked:ring-emerald-200">
+                    <input type="radio" name="role" value="{{ $value }}" @checked(old('role', $editedUser->role ?? 'operator') === $value) class="mt-1 h-4 w-4 shrink-0 accent-emerald-600">
+                    <span>
+                        <span class="block text-sm font-extrabold text-navy-900">{{ $label }}</span>
+                        <span class="block text-xs text-slate-500">{{ $hint }}</span>
+                    </span>
+                </label>
             @endforeach
-        </select>
+        </div>
         @error('role')<p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p>@enderror
     </div>
 
