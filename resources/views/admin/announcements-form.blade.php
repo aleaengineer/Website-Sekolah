@@ -20,7 +20,7 @@
 
     <div>
         <label for="content" class="mb-1.5 block text-sm font-bold text-navy-900">Isi Pengumuman</label>
-        <textarea name="content" id="content" rows="6" required
+        <textarea name="content" id="content" rows="6"
                   class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200">{{ old('content', $announcement->content ?? '') }}</textarea>
         @error('content')<p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p>@enderror
     </div>
@@ -54,3 +54,20 @@
     </div>
 </form>
 @endsection
+
+@push('admin-styles')
+<style>
+    .ck-editor__editable_inline { min-height: 220px; }
+</style>
+@endpush
+
+@push('admin-scripts')
+<script src="{{ asset('vendor/ckeditor/ckeditor.js') }}"></script>
+<script>
+    ClassicEditor
+        .create(document.querySelector('#content'), {
+            toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'blockQuote', 'undo', 'redo'],
+        })
+        .catch(function (error) { console.error(error); });
+</script>
+@endpush

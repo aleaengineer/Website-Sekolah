@@ -159,7 +159,7 @@
                             <span class="rounded-full bg-amber-100 px-2.5 py-0.5 text-[11px] font-extrabold text-amber-800">Penting</span>
                         @endif
                     </div>
-                    <p class="mt-1 line-clamp-2 text-sm text-slate-600">{{ $announcement->content }}</p>
+                    <p class="mt-1 line-clamp-2 text-sm text-slate-600">{{ \Illuminate\Support\Str::limit(strip_tags($announcement->content), 140) }}</p>
                 </div>
             </div>
         @endforeach

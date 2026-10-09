@@ -21,7 +21,7 @@
                     @endif
                 </div>
                 <h2 class="mt-2 font-serif text-xl font-bold text-navy-900">{{ $announcement->title }}</h2>
-                <p class="mt-2 whitespace-pre-line text-sm leading-relaxed text-slate-600">{{ $announcement->content }}</p>
+                <div class="rich-text mt-2 text-sm leading-relaxed text-slate-600">{!! $announcement->content !!}</div>
             </article>
         @empty
             <p class="rounded-3xl bg-white p-10 text-center text-slate-500">Belum ada pengumuman.</p>

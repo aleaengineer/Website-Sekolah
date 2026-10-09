@@ -33,6 +33,36 @@ body {
     @apply mb-4 leading-relaxed;
 }
 
+.rich-text ul {
+    @apply mb-4 list-disc pl-6;
+}
+
+.rich-text ol {
+    @apply mb-4 list-decimal pl-6;
+}
+
+.rich-text li {
+    @apply mb-1;
+}
+
+.rich-text h2,
+.rich-text h3,
+.rich-text h4 {
+    @apply mb-3 mt-5 font-bold text-navy-900;
+}
+
+.rich-text strong {
+    @apply font-bold text-navy-900;
+}
+
+.rich-text a {
+    @apply font-semibold text-emerald-700 underline;
+}
+
+.rich-text blockquote {
+    @apply mb-4 border-l-4 border-amber-400 pl-4 italic;
+}
+
 .admin-scroll {
     scrollbar-width: thin;
     scrollbar-color: rgb(255 255 255 / 0.2) transparent;

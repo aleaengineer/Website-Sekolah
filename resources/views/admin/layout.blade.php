@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Admin') — SMP Negeri Satu Atap I Sidamulih</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('admin-styles')
 </head>
 <body class="bg-slate-100 text-slate-800">
     <div class="flex min-h-screen">

@@ -233,6 +233,21 @@ class SchoolWebsiteTest extends TestCase
         $this->get(route('announcements'))->assertOk()->assertSee('Libur Semester Ganjil')->assertDontSee('Draf Internal');
     }
 
+    public function test_announcement_html_renders_unescaped(): void
+    {
+        Announcement::create([
+            'title' => 'Pengumuman Berformat',
+            'content' => '<p><strong>Jadwal</strong> baru:</p><ol><li>Senin upacara</li><li>Selasa ekstrakurikuler</li></ol>',
+            'published_at' => now()->subDay(),
+            'is_published' => true,
+        ]);
+
+        $this->get(route('announcements'))
+            ->assertOk()
+            ->assertSee('<strong>Jadwal</strong>', false)
+            ->assertSee('<ol>', false);
+    }
+
     public function test_news_search_and_category_filter(): void
     {
         $category = Category::create(['name' => 'Prestasi', 'slug' => 'prestasi']);
