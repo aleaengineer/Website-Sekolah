@@ -2,10 +2,14 @@
 
 namespace Database\Seeders;
 
+use App\Models\AcademicCalendar;
+use App\Models\Agenda;
 use App\Models\Category;
+use App\Models\Document;
 use App\Models\Extracurricular;
 use App\Models\Gallery;
 use App\Models\News;
+use App\Models\PpdbWave;
 use App\Models\Setting;
 use App\Models\Teacher;
 use Illuminate\Database\Seeder;
@@ -44,6 +48,34 @@ class SchoolSeeder extends Seeder
             Extracurricular::updateOrCreate(
                 ['slug' => $extracurricular['slug']],
                 [...$extracurricular, 'sort_order' => $index + 1]
+            );
+        }
+
+        foreach ($this->ppdbWaves() as $wave) {
+            PpdbWave::updateOrCreate(
+                ['name' => $wave['name']],
+                $wave
+            );
+        }
+
+        foreach ($this->agendas() as $agenda) {
+            Agenda::updateOrCreate(
+                ['slug' => $agenda['slug']],
+                $agenda
+            );
+        }
+
+        foreach ($this->calendars() as $calendar) {
+            AcademicCalendar::updateOrCreate(
+                ['title' => $calendar['title'], 'start_date' => $calendar['start_date']],
+                $calendar
+            );
+        }
+
+        foreach ($this->documents() as $index => $document) {
+            Document::updateOrCreate(
+                ['title' => $document['title']],
+                [...$document, 'sort_order' => $index + 1]
             );
         }
     }
@@ -109,5 +141,119 @@ class SchoolSeeder extends Seeder
             'schedule' => $item[2],
             'is_active' => true,
         ], $items);
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function ppdbWaves(): array
+    {
+        $year = (int) now()->year;
+
+        return [
+            [
+                'name' => "Gelombang 1 {$year}",
+                'description' => 'Pendaftaran awal untuk semua jalur. Segera verifikasi berkas ke sekolah setelah mendaftar online.',
+                'start_date' => "{$year}-05-01",
+                'end_date' => "{$year}-06-15",
+                'quota' => 64,
+                'is_active' => true,
+            ],
+            [
+                'name' => "Gelombang 2 {$year}",
+                'description' => 'Pendaftaran susulan bila kuota Gelombang 1 belum terpenuhi.',
+                'start_date' => "{$year}-06-16",
+                'end_date' => "{$year}-07-15",
+                'quota' => 32,
+                'is_active' => true,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function agendas(): array
+    {
+        return [
+            [
+                'title' => 'Masa Pengenalan Lingkungan Sekolah (MPLS)',
+                'slug' => 'mpls',
+                'description' => 'Kegiatan pengenalan lingkungan sekolah bagi peserta didik baru: tata tertib, sarana prasarana, dan ekstrakurikuler.',
+                'location' => 'Lapangan & Ruang Kelas',
+                'start_at' => now()->addDays(14)->setTime(7, 0),
+                'end_at' => now()->addDays(16)->setTime(12, 0),
+                'cover_image' => null,
+                'is_published' => true,
+            ],
+            [
+                'title' => 'Upacara Bendera Hari Senin',
+                'slug' => 'upacara-bendera-hari-senin',
+                'description' => 'Upacara bendera rutin setiap Senin pagi yang wajib diikuti seluruh siswa, guru, dan tendik.',
+                'location' => 'Lapangan Upacara',
+                'start_at' => now()->addDays(7)->setTime(7, 0),
+                'end_at' => null,
+                'cover_image' => null,
+                'is_published' => true,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function calendars(): array
+    {
+        $year = (int) now()->year;
+
+        return [
+            [
+                'title' => 'Awal Semester Ganjil',
+                'description' => 'Hari pertama pembelajaran efektif semester ganjil dan MPLS peserta didik baru.',
+                'start_date' => "{$year}-07-15",
+                'end_date' => null,
+                'category' => 'kegiatan',
+                'is_published' => true,
+            ],
+            [
+                'title' => 'Asesmen Sumatif Tengah Semester',
+                'description' => 'Pelaksanaan asesmen tengah semester ganjil untuk semua kelas.',
+                'start_date' => "{$year}-10-06",
+                'end_date' => "{$year}-10-11",
+                'category' => 'ujian',
+                'is_published' => true,
+            ],
+            [
+                'title' => 'Libur Semester Ganjil',
+                'description' => 'Libur akhir semester ganjil dan persiapan rapor.',
+                'start_date' => "{$year}-12-22",
+                'end_date' => ($year + 1).'-01-04',
+                'category' => 'libur',
+                'is_published' => true,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function documents(): array
+    {
+        return [
+            [
+                'title' => 'Formulir Pendaftaran PPDB (Cadangan)',
+                'description' => 'Formulir fisik bila pendaftar tidak dapat mengisi formulir online.',
+                'file' => 'documents/contoh-formulir-ppdb.pdf',
+                'category' => 'formulir',
+                'is_published' => false,
+            ],
+            [
+                'title' => 'Tata Tertib Peserta Didik',
+                'description' => 'Tata tertib dan pembiasaan harian SMP Negeri Satu Atap I Sidamulih.',
+                'file' => 'documents/contoh-tata-tertib.pdf',
+                'category' => 'regulasi',
+                'is_published' => false,
+            ],
+        ];
     }
 }

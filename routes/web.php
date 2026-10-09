@@ -1,19 +1,24 @@
 <?php
 
 use App\Http\Controllers\AcademicController;
+use App\Http\Controllers\Admin\AcademicCalendarController as AdminAcademicCalendarController;
+use App\Http\Controllers\Admin\AgendaController as AdminAgendaController;
 use App\Http\Controllers\Admin\AnnouncementController as AdminAnnouncementController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\ContactMessageController as AdminContactMessageController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DocumentController as AdminDocumentController;
 use App\Http\Controllers\Admin\ExtracurricularController as AdminExtracurricularController;
 use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\Admin\PpdbRegistrationController as AdminPpdbRegistrationController;
+use App\Http\Controllers\Admin\PpdbWaveController as AdminPpdbWaveController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
 use App\Http\Controllers\Admin\StudentStatisticController as AdminStudentStatisticController;
 use App\Http\Controllers\Admin\TeacherController as AdminTeacherController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ContactController;
@@ -33,6 +38,9 @@ Route::get('/berita', [NewsController::class, 'index'])->name('news.index');
 Route::get('/berita/{news:slug}', [NewsController::class, 'show'])->name('news.show');
 
 Route::get('/pengumuman', AnnouncementController::class)->name('announcements');
+
+Route::get('/agenda', [AgendaController::class, 'index'])->name('agendas.index');
+Route::get('/agenda/{agenda:slug}', [AgendaController::class, 'show'])->name('agendas.show');
 
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 
@@ -92,6 +100,26 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function (): v
         Route::resource('pengumuman', AdminAnnouncementController::class)
             ->parameters(['pengumuman' => 'announcement'])
             ->names('announcements')
+            ->except(['show']);
+
+        Route::resource('agenda', AdminAgendaController::class)
+            ->parameters(['agenda' => 'agenda'])
+            ->names('agendas')
+            ->except(['show']);
+
+        Route::resource('kalender', AdminAcademicCalendarController::class)
+            ->parameters(['kalender' => 'calendar'])
+            ->names('calendars')
+            ->except(['show']);
+
+        Route::resource('dokumen', AdminDocumentController::class)
+            ->parameters(['dokumen' => 'document'])
+            ->names('documents')
+            ->except(['show']);
+
+        Route::resource('gelombang', AdminPpdbWaveController::class)
+            ->parameters(['gelombang' => 'wave'])
+            ->names('waves')
             ->except(['show']);
 
         Route::get('/kategori', [AdminCategoryController::class, 'index'])->name('categories.index');

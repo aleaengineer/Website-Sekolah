@@ -6,6 +6,7 @@ use App\Models\Announcement;
 use App\Models\Category;
 use App\Models\News;
 use App\Models\PpdbRegistration;
+use App\Models\PpdbWave;
 use Database\Seeders\SchoolSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -77,6 +78,14 @@ class SchoolWebsiteTest extends TestCase
 
     public function test_valid_ppdb_payload_creates_registration(): void
     {
+        $wave = PpdbWave::create([
+            'name' => 'Gelombang 1',
+            'start_date' => now()->subDay()->toDateString(),
+            'end_date' => now()->addWeek()->toDateString(),
+            'quota' => 100,
+            'is_active' => true,
+        ]);
+
         $payload = [
             'student_name' => 'Budi Santoso',
             'birth_place' => 'Pangandaran',
@@ -87,6 +96,7 @@ class SchoolWebsiteTest extends TestCase
             'parent_phone' => '081234567890',
             'address' => 'Dusun Kalijati, Sidamulih',
             'jalur' => 'zonasi',
+            'ppdb_wave_id' => $wave->id,
         ];
 
         $response = $this->post(route('ppdb.store'), $payload);
@@ -117,6 +127,7 @@ class SchoolWebsiteTest extends TestCase
             'parent_phone',
             'address',
             'jalur',
+            'ppdb_wave_id',
         ]);
         $this->assertDatabaseCount('ppdb_registrations', 0);
     }

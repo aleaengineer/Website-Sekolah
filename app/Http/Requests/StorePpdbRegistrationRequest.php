@@ -32,6 +32,11 @@ class StorePpdbRegistrationRequest extends FormRequest
             'parent_phone' => ['required', 'string', 'max:20'],
             'address' => ['required', 'string', 'max:500'],
             'jalur' => ['required', 'in:zonasi,afirmasi,prestasi,mutasi'],
+            'ppdb_wave_id' => ['required', 'integer', 'exists:ppdb_waves,id'],
+            'kk_file' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
+            'akta_file' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
+            'rapor_file' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
+            'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
         ];
     }
 }

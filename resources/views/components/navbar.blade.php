@@ -4,6 +4,7 @@
         ['route' => 'profile', 'label' => 'Profil', 'match' => 'profile'],
         ['route' => 'academic', 'label' => 'Akademik', 'match' => 'academic'],
         ['route' => 'news.index', 'label' => 'Berita', 'match' => 'news.*'],
+        ['route' => 'agendas.index', 'label' => 'Agenda', 'match' => 'agendas.*'],
         ['route' => 'announcements', 'label' => 'Pengumuman', 'match' => 'announcements'],
         ['route' => 'gallery', 'label' => 'Galeri', 'match' => 'gallery'],
         ['route' => 'contact.index', 'label' => 'Kontak', 'match' => 'contact.*'],

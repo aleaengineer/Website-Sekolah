@@ -23,6 +23,31 @@
         <h2 class="font-serif text-2xl font-bold text-navy-900">Informasi Pendaftaran</h2>
         <p class="mt-3 leading-relaxed text-slate-600">{{ $settings['ppdb.info'] ?? '' }}</p>
 
+        <h3 class="mt-8 font-extrabold text-navy-900">Gelombang Pendaftaran</h3>
+        <div class="mt-4 grid gap-4 sm:grid-cols-2">
+            @forelse ($waves as $wave)
+                <div class="rounded-2xl p-5 ring-1 {{ $openWaves->contains($wave) ? 'bg-emerald-50 ring-emerald-200' : 'bg-slate-50 ring-slate-100' }}">
+                    <div class="flex items-center justify-between gap-2">
+                        <p class="font-extrabold text-navy-900">{{ $wave->name }}</p>
+                        @if ($openWaves->contains($wave))
+                            <span class="rounded-full bg-emerald-500 px-3 py-1 text-[11px] font-extrabold uppercase tracking-widest text-white">Dibuka</span>
+                        @elseif (! $wave->isOpen())
+                            <span class="rounded-full bg-slate-300 px-3 py-1 text-[11px] font-extrabold uppercase tracking-widest text-slate-700">Ditutup</span>
+                        @else
+                            <span class="rounded-full bg-rose-500 px-3 py-1 text-[11px] font-extrabold uppercase tracking-widest text-white">Penuh</span>
+                        @endif
+                    </div>
+                    <p class="mt-1 text-sm text-slate-600">{{ $wave->start_date->translatedFormat('d M Y') }} &ndash; {{ $wave->end_date->translatedFormat('d M Y') }}</p>
+                    <p class="mt-1 text-sm font-bold text-navy-900">Sisa kuota {{ max(0, $wave->quota - $wave->registrations_count) }} dari {{ $wave->quota }}</p>
+                    @if ($wave->description)
+                        <p class="mt-1 text-sm text-slate-600">{{ $wave->description }}</p>
+                    @endif
+                </div>
+            @empty
+                <p class="rounded-2xl bg-slate-50 p-5 text-sm text-slate-500 ring-1 ring-slate-100 sm:col-span-2">Gelombang pendaftaran segera diumumkan. Pantau halaman ini dan pengumuman sekolah.</p>
+            @endforelse
+        </div>
+
         <h3 class="mt-8 font-extrabold text-navy-900">Alur Pendaftaran</h3>
         <ol class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             @php
@@ -56,7 +81,7 @@
     <div class="mt-10 rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-100">
         <x-section-heading eyebrow="Formulir" align="left">Pendaftaran Online</x-section-heading>
 
-        <form action="{{ route('ppdb.store') }}" method="POST" class="mt-8 grid gap-5 sm:grid-cols-2">
+        <form action="{{ route('ppdb.store') }}" method="POST" enctype="multipart/form-data" class="mt-8 grid gap-5 sm:grid-cols-2">
             @csrf
 
             <div class="sm:col-span-2">
@@ -103,6 +128,20 @@
                 @error('jalur')<p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p>@enderror
             </div>
 
+            <div>
+                <label for="ppdb_wave_id" class="mb-1.5 block text-sm font-bold text-navy-900">Gelombang Pendaftaran</label>
+                <select name="ppdb_wave_id" id="ppdb_wave_id" required
+                        class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200">
+                    <option value="">— Pilih gelombang —</option>
+                    @foreach ($waves as $wave)
+                        <option value="{{ $wave->id }}" @selected(old('ppdb_wave_id') == $wave->id) @disabled(! $openWaves->contains($wave))>
+                            {{ $wave->name }} (sisa {{ max(0, $wave->quota - $wave->registrations_count) }})
+                        </option>
+                    @endforeach
+                </select>
+                @error('ppdb_wave_id')<p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p>@enderror
+            </div>
+
             <div class="sm:col-span-2">
                 <label for="previous_school" class="mb-1.5 block text-sm font-bold text-navy-900">Asal Sekolah (SD/MI)</label>
                 <input type="text" name="previous_school" id="previous_school" value="{{ old('previous_school') }}" required
@@ -129,6 +168,39 @@
                 <textarea name="address" id="address" rows="3" required
                           class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200">{{ old('address') }}</textarea>
                 @error('address')<p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p>@enderror
+            </div>
+
+            <div class="sm:col-span-2">
+                <h3 class="font-extrabold text-navy-900">Berkas Pendukung <span class="font-semibold text-slate-400">(opsional, PDF/JPG/PNG maks 4 MB; foto maks 2 MB)</span></h3>
+                <p class="mt-1 text-sm text-slate-500">Unggah sekarang untuk mempercepat verifikasi, atau bawa fotokopinya saat verifikasi berkas ke sekolah.</p>
+            </div>
+
+            <div>
+                <label for="kk_file" class="mb-1.5 block text-sm font-bold text-navy-900">Kartu Keluarga (KK)</label>
+                <input type="file" name="kk_file" id="kk_file" accept=".pdf,.jpg,.jpeg,.png"
+                       class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-500">
+                @error('kk_file')<p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p>@enderror
+            </div>
+
+            <div>
+                <label for="akta_file" class="mb-1.5 block text-sm font-bold text-navy-900">Akta Kelahiran</label>
+                <input type="file" name="akta_file" id="akta_file" accept=".pdf,.jpg,.jpeg,.png"
+                       class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-500">
+                @error('akta_file')<p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p>@enderror
+            </div>
+
+            <div>
+                <label for="rapor_file" class="mb-1.5 block text-sm font-bold text-navy-900">Rapor / SKHU Terakhir</label>
+                <input type="file" name="rapor_file" id="rapor_file" accept=".pdf,.jpg,.jpeg,.png"
+                       class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-500">
+                @error('rapor_file')<p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p>@enderror
+            </div>
+
+            <div>
+                <label for="photo" class="mb-1.5 block text-sm font-bold text-navy-900">Pas Foto</label>
+                <input type="file" name="photo" id="photo" accept=".jpg,.jpeg,.png"
+                       class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-500">
+                @error('photo')<p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p>@enderror
             </div>
 
             <div class="sm:col-span-2">

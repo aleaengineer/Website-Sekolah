@@ -34,6 +34,7 @@
                         'Jenis Kelamin' => $registration->gender === 'L' ? 'Laki-laki' : 'Perempuan',
                         'Asal Sekolah' => $registration->previous_school,
                         'Jalur Pendaftaran' => ucfirst($registration->jalur),
+                        'Gelombang' => $registration->wave?->name ?? '—',
                         'Nama Orang Tua/Wali' => $registration->parent_name,
                         'No. HP Orang Tua/Wali' => $registration->parent_phone,
                         'Waktu Mendaftar' => $registration->created_at->translatedFormat('d F Y H:i'),
@@ -50,6 +51,24 @@
                     <dd class="mt-0.5 font-semibold text-navy-900">{{ $registration->address }}</dd>
                 </div>
             </dl>
+
+            @php
+                $printDocs = [
+                    'Kartu Keluarga' => $registration->kk_file,
+                    'Akta Kelahiran' => $registration->akta_file,
+                    'Rapor / SKHU' => $registration->rapor_file,
+                    'Pas Foto' => $registration->photo,
+                ];
+            @endphp
+            <h2 class="mt-6 text-sm font-extrabold uppercase tracking-widest text-slate-500">Berkas Terlampir</h2>
+            <ul class="mt-2 grid gap-2 text-sm sm:grid-cols-2">
+                @foreach ($printDocs as $label => $path)
+                    <li class="flex items-center justify-between gap-2 rounded-xl bg-slate-50 px-4 py-2 ring-1 ring-slate-100">
+                        <span class="font-semibold text-navy-900">{{ $label }}</span>
+                        <span class="text-xs font-bold {{ $path ? 'text-emerald-700' : 'text-slate-400' }}">{{ $path ? 'Terlampir' : 'Belum' }}</span>
+                    </li>
+                @endforeach
+            </ul>
 
             <p class="mt-6 rounded-2xl bg-amber-50 p-4 text-xs leading-relaxed text-amber-900 ring-1 ring-amber-200">
                 Simpan bukti ini dan bawa saat verifikasi berkas ke sekolah beserta fotokopi KK, akta kelahiran, dan rapor/SKHU terakhir.

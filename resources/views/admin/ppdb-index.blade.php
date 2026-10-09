@@ -14,18 +14,26 @@
             <option value="{{ $value }}" @selected(request('status') === $value)>{{ $label }}</option>
         @endforeach
     </select>
+    <select name="ppdb_wave_id" onchange="this.form.submit()"
+            class="rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-emerald-500">
+        <option value="">Semua gelombang</option>
+        @foreach ($waves as $wave)
+            <option value="{{ $wave->id }}" @selected((string) request('ppdb_wave_id') === (string) $wave->id)>{{ $wave->name }}</option>
+        @endforeach
+    </select>
     <button type="submit" class="rounded-2xl bg-navy-900 px-5 py-2.5 text-sm font-bold text-white hover:bg-navy-800">Cari</button>
-    <a href="{{ route('admin.ppdb.export', ['status' => request('status')]) }}" class="rounded-2xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-bold text-navy-900 transition hover:bg-slate-50">Ekspor Excel</a>
+    <a href="{{ route('admin.ppdb.export', ['status' => request('status'), 'ppdb_wave_id' => request('ppdb_wave_id')]) }}" class="rounded-2xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-bold text-navy-900 transition hover:bg-slate-50">Ekspor Excel</a>
 </form>
 
 <div class="overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-slate-200">
     <div class="overflow-x-auto">
-        <table class="w-full min-w-[760px] text-left text-sm">
+        <table class="w-full min-w-[860px] text-left text-sm">
             <thead>
                 <tr class="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
                     <th class="px-6 py-4">No. Pendaftaran</th>
                     <th class="px-6 py-4">Nama</th>
                     <th class="px-6 py-4">Jalur</th>
+                    <th class="px-6 py-4">Gelombang</th>
                     <th class="px-6 py-4">Status</th>
                     <th class="px-6 py-4 text-right">Aksi</th>
                 </tr>
@@ -36,11 +44,13 @@
                         <td class="px-6 py-4 font-mono text-xs font-bold text-navy-900">{{ $reg->registration_number }}</td>
                         <td class="px-6 py-4 font-bold text-navy-900">{{ $reg->student_name }}</td>
                         <td class="px-6 py-4 text-slate-600">{{ ucfirst($reg->jalur) }}</td>
+                        <td class="px-6 py-4 text-slate-600">{{ $reg->wave?->name ?? '—' }}</td>
                         <td class="px-6 py-4">
                             <span class="rounded-full px-3 py-1 text-xs font-bold
                                 {{ $reg->status === 'diterima' ? 'bg-emerald-100 text-emerald-800' : '' }}
                                 {{ $reg->status === 'ditolak' ? 'bg-rose-100 text-rose-700' : '' }}
                                 {{ $reg->status === 'diverifikasi' ? 'bg-sky-100 text-sky-800' : '' }}
+                                {{ $reg->status === 'cadangan' ? 'bg-violet-100 text-violet-800' : '' }}
                                 {{ $reg->status === 'menunggu' ? 'bg-amber-100 text-amber-800' : '' }}">
                                 {{ $statuses[$reg->status] ?? $reg->status }}
                             </span>
@@ -57,7 +67,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="5" class="px-6 py-10 text-center text-slate-500">Belum ada pendaftar.</td></tr>
+                    <tr><td colspan="6" class="px-6 py-10 text-center text-slate-500">Belum ada pendaftar.</td></tr>
                 @endforelse
             </tbody>
         </table>
