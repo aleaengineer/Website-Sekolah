@@ -26,25 +26,15 @@
     </div>
 
     <div>
-        <span class="mb-1.5 block text-sm font-bold text-navy-900">Role</span>
-        @php
-            $roles = [
-                'admin' => ['Admin', 'Akses penuh termasuk kelola pengguna, log, dan backup'],
-                'operator' => ['Operator', 'Semua konten, tanpa kelola pengguna'],
-                'panitia' => ['Panitia', 'Khusus PPDB, gelombang, jalur, dan pesan'],
-                'guru' => ['Guru', 'Hanya Berita dan Galeri'],
-            ];
-        @endphp
-        <div class="grid gap-2 sm:grid-cols-2">
-            @foreach ($roles as $value => [$label, $hint])
-                <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200 px-4 py-3 transition has-checked:border-emerald-500 has-checked:bg-emerald-50 has-checked:ring-2 has-checked:ring-emerald-200">
-                    <input type="radio" name="role" value="{{ $value }}" @checked(old('role', $editedUser->role ?? 'operator') === $value) class="mt-1 h-4 w-4 shrink-0 accent-emerald-600">
-                    <span>
-                        <span class="block text-sm font-extrabold text-navy-900">{{ $label }}</span>
-                        <span class="block text-xs text-slate-500">{{ $hint }}</span>
-                    </span>
-                </label>
-            @endforeach
+        <label for="role" class="mb-1.5 block text-sm font-bold text-navy-900">Role</label>
+        <div class="relative">
+            <select name="role" id="role" required
+                    class="w-full appearance-none rounded-2xl border border-slate-200 bg-white py-3 pl-4 pr-11 text-sm font-semibold text-navy-900 shadow-sm outline-none transition hover:border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200">
+                @foreach (['admin' => 'Admin — akses penuh termasuk kelola pengguna', 'operator' => 'Operator — semua konten, tanpa kelola pengguna', 'panitia' => 'Panitia — khusus PPDB, gelombang, jalur & pesan', 'guru' => 'Guru — hanya Berita & Galeri'] as $value => $label)
+                    <option value="{{ $value }}" @selected(old('role', $editedUser->role ?? 'operator') === $value)>{{ $label }}</option>
+                @endforeach
+            </select>
+            <svg class="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
         </div>
         @error('role')<p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p>@enderror
     </div>
