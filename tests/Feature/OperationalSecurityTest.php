@@ -6,6 +6,7 @@ use App\Models\ActivityLog;
 use App\Models\News;
 use App\Models\PpdbWave;
 use App\Models\User;
+use App\Support\MathCaptcha;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
@@ -99,6 +100,28 @@ class OperationalSecurityTest extends TestCase
         $this->assertGuest();
     }
 
+    public function test_math_captcha_supports_subtraction(): void
+    {
+        $operators = [];
+
+        for ($i = 0; $i < 50; $i++) {
+            $question = MathCaptcha::generate('probe');
+
+            preg_match('/^(\d+) ([+-]) (\d+)$/', $question, $matches);
+            $this->assertNotEmpty($matches, "Soal tidak terduga: {$question}");
+
+            $expected = $matches[2] === '+' ? ((int) $matches[1] + (int) $matches[3]) : ((int) $matches[1] - (int) $matches[3]);
+
+            $this->assertGreaterThanOrEqual(0, $expected);
+            $this->assertTrue(MathCaptcha::check('probe', $expected));
+
+            $operators[] = $matches[2];
+        }
+
+        $this->assertContains('+', $operators);
+        $this->assertContains('-', $operators);
+    }
+
     public function test_captcha_refresh_returns_new_question(): void
     {
         $first = $this->getJson(route('captcha.refresh', 'login'))
@@ -106,11 +129,11 @@ class OperationalSecurityTest extends TestCase
             ->assertJsonStructure(['question'])
             ->json('question');
 
-        $this->assertMatchesRegularExpression('/^\d+ \+ \d+$/', $first);
+        $this->assertMatchesRegularExpression('/^\d+ [+-] \d+$/', $first);
 
         $second = $this->getJson(route('captcha.refresh', 'login'))->json('question');
 
-        $this->assertMatchesRegularExpression('/^\d+ \+ \d+$/', $second);
+        $this->assertMatchesRegularExpression('/^\d+ [+-] \d+$/', $second);
     }
 
     public function test_login_and_logout_are_logged(): void
