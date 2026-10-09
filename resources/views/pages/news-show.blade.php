@@ -2,6 +2,10 @@
 
 @section('title', $article->title.' — '.($settings['school.name'] ?? ''))
 
+@section('description', \Illuminate\Support\Str::limit($article->excerpt ?: strip_tags($article->body), 160))
+
+@section('og-image', $article->cover_image ? asset('storage/'.$article->cover_image) : asset('favicon.svg'))
+
 @section('content')
 <section class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
     <a href="{{ route('news.index') }}" class="text-sm font-bold text-emerald-700 hover:text-emerald-800">&larr; Kembali ke Berita</a>

@@ -48,6 +48,7 @@ Route::get('/agenda', [AgendaController::class, 'index'])->name('agendas.index')
 Route::get('/agenda/{agenda:slug}', [AgendaController::class, 'show'])->name('agendas.show');
 
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
+Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
 
 Route::get('/galeri', GalleryController::class)->name('gallery');
 

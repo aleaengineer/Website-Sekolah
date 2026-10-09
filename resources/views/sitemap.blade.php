@@ -3,6 +3,7 @@
     @foreach (['', 'profil', 'akademik', 'berita', 'pengumuman', 'agenda', 'galeri', 'ppdb', 'kontak'] as $path)
     <url>
         <loc>{{ url($path) }}</loc>
+        <lastmod>{{ \Carbon\Carbon::parse($staticLastmod)->toAtomString() }}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>{{ $path === '' ? '1.0' : '0.8' }}</priority>
     </url>

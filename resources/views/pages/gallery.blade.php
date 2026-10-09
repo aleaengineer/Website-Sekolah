@@ -2,6 +2,8 @@
 
 @section('title', 'Galeri — '.($settings['school.name'] ?? ''))
 
+@section('description', 'Dokumentasi foto kegiatan SMP Negeri Satu Atap I Sidamulih.')
+
 @section('content')
 <section class="bg-navy-950">
     <div class="mx-auto max-w-7xl bg-gradient-to-br from-navy-950 via-navy-800 to-emerald-800 px-4 py-14 sm:px-6 lg:px-8">

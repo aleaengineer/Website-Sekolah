@@ -2,6 +2,10 @@
 
 @section('title', $agenda->title.' — '.($settings['school.name'] ?? ''))
 
+@section('description', \Illuminate\Support\Str::limit(strip_tags($agenda->description), 160).' '.$agenda->start_at->translatedFormat('d F Y').($agenda->location ? ' di '.$agenda->location : ''))
+
+@section('og-image', $agenda->cover_image ? asset('storage/'.$agenda->cover_image) : asset('favicon.svg'))
+
 @section('content')
 <section class="bg-navy-950">
     <div class="mx-auto max-w-4xl px-4 py-14 sm:px-6 lg:px-8">
@@ -21,7 +25,7 @@
 <section class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
     <article class="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-100">
         @if ($agenda->cover_image)
-            <img src="{{ asset('storage/'.$agenda->cover_image) }}" alt="{{ $agenda->title }}" class="mb-6 w-full rounded-2xl object-cover ring-1 ring-slate-100">
+            <img src="{{ asset('storage/'.$agenda->cover_image) }}" alt="{{ $agenda->title }}" class="mb-6 w-full rounded-2xl object-cover ring-1 ring-slate-100" loading="lazy" decoding="async">
         @endif
         <div class="rich-text max-w-none text-slate-700">
             {!! $agenda->description !!}

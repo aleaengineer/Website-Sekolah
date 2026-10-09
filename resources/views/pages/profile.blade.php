@@ -2,6 +2,8 @@
 
 @section('title', 'Profil — '.($settings['school.name'] ?? ''))
 
+@section('description', 'Profil SMP Negeri Satu Atap I Sidamulih: visi misi, sejarah, guru, dan lokasi sekolah di Sidamulih, Pangandaran.')
+
 @section('content')
 <section class="bg-navy-950">
     <div class="mx-auto max-w-7xl bg-gradient-to-br from-navy-950 via-navy-800 to-emerald-800 px-4 py-14 sm:px-6 lg:px-8">
@@ -55,7 +57,7 @@
             @forelse ($teachers as $index => $teacher)
                 <div class="rounded-3xl bg-slate-50 p-6 text-center ring-1 ring-slate-100 transition hover:shadow-lg">
                     @if ($teacher->photo)
-                        <img src="{{ asset('storage/'.$teacher->photo) }}" alt="{{ $teacher->name }}" class="mx-auto aspect-[2/3] w-1/2 rounded-2xl object-cover ring-1 ring-slate-200" loading="lazy">
+                        <img src="{{ asset('storage/'.$teacher->photo) }}" alt="{{ $teacher->name }}" class="mx-auto aspect-[2/3] w-1/2 rounded-2xl object-cover ring-1 ring-slate-200" loading="lazy" decoding="async">
                     @else
                         <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-navy-700 to-emerald-600 text-2xl font-extrabold text-white" aria-hidden="true">
                             {{ strtoupper(mb_substr($teacher->name, 0, 1)) }}

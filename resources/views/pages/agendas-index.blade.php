@@ -2,6 +2,8 @@
 
 @section('title', 'Agenda — '.($settings['school.name'] ?? ''))
 
+@section('description', 'Jadwal agenda dan kegiatan SMP Negeri Satu Atap I Sidamulih.')
+
 @section('content')
 <section class="bg-navy-950">
     <div class="mx-auto max-w-7xl bg-gradient-to-br from-navy-950 via-navy-800 to-emerald-800 px-4 py-14 sm:px-6 lg:px-8">
@@ -34,7 +36,7 @@
             @forelse ($agendas as $agenda)
                 <a href="{{ route('agendas.show', $agenda) }}" class="group overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-slate-100 transition hover:shadow-md">
                     @if ($agenda->cover_image)
-                        <img src="{{ asset('storage/'.$agenda->cover_image) }}" alt="{{ $agenda->title }}" class="h-44 w-full object-cover">
+                        <img src="{{ asset('storage/'.$agenda->cover_image) }}" alt="{{ $agenda->title }}" class="h-44 w-full object-cover" loading="lazy" decoding="async">
                     @endif
                     <div class="p-6">
                         <p class="text-xs font-bold uppercase tracking-widest text-emerald-700">{{ $agenda->start_at->translatedFormat('d M Y') }}</p>

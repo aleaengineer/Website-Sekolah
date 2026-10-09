@@ -5,12 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', ($settings['school.name'] ?? 'SMP Negeri Satu Atap I Sidamulih'))</title>
     <meta name="description" content="@yield('description', ($settings['school.description'] ?? ''))">
+    <meta name="robots" content="@yield('meta-robots', 'index, follow')">
+    <link rel="canonical" href="@yield('canonical', url()->current())">
     <meta property="og:title" content="@yield('title', ($settings['school.name'] ?? 'SMP Negeri Satu Atap I Sidamulih'))">
     <meta property="og:description" content="@yield('description', ($settings['school.description'] ?? ''))">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:image" content="{{ asset('favicon.svg') }}">
-    <meta name="twitter:card" content="summary">
+    <meta property="og:image" content="@yield('og-image', asset('favicon.svg'))">
+    <meta name="twitter:card" content="summary_large_image">
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>

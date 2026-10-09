@@ -192,3 +192,24 @@
     </div>
 </section>
 @endsection
+
+@push('scripts')
+<script type="application/ld+json">
+{!! json_encode([
+    '@context' => 'https://schema.org',
+    '@type' => 'School',
+    'name' => $settings['school.name'] ?? 'SMP Negeri Satu Atap I Sidamulih',
+    'url' => url('/'),
+    'identifier' => $settings['school.npsn'] ?? '20253310',
+    'telephone' => $settings['school.phone'] ?? null,
+    'email' => $settings['school.email'] ?? null,
+    'address' => [
+        '@type' => 'PostalAddress',
+        'streetAddress' => $settings['school.address'] ?? null,
+        'addressLocality' => $settings['school.district'] ?? 'Sidamulih',
+        'addressRegion' => $settings['school.province'] ?? 'Jawa Barat',
+        'addressCountry' => 'ID',
+    ],
+], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+</script>
+@endpush

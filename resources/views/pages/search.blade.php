@@ -2,6 +2,8 @@
 
 @section('title', 'Hasil pencarian')
 
+@section('meta-robots', 'noindex, follow')
+
 @section('content')
 <section class="bg-navy-950">
     <div class="mx-auto max-w-7xl bg-gradient-to-br from-navy-950 via-navy-800 to-emerald-800 px-4 py-14 sm:px-6 lg:px-8">
