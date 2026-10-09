@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exports\PpdbRegistrationsExport;
 use App\Http\Controllers\Controller;
+use App\Mail\PpdbStatusMail;
+use App\Models\ActivityLog;
 use App\Models\PpdbRegistration;
 use App\Models\PpdbWave;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
@@ -37,11 +40,12 @@ class PpdbRegistrationController extends Controller
 
     public function show(PpdbRegistration $ppdb): View
     {
-        $ppdb->load('wave');
+        $ppdb->load(['wave', 'track']);
 
         return view('admin.ppdb-show', [
             'registration' => $ppdb,
             'statuses' => PpdbRegistration::STATUSES,
+            'waLink' => $this->whatsAppLink($ppdb),
         ]);
     }
 
@@ -57,6 +61,8 @@ class PpdbRegistrationController extends Controller
 
         $suffix = $status ? "-{$status}" : '';
         $suffix .= $waveId ? "-gelombang{$waveId}" : '';
+
+        ActivityLog::record(ActivityLog::ACTION_EXPORT, "mengekspor data PPDB ke Excel{$suffix}");
 
         return Excel::download(
             new PpdbRegistrationsExport($status, $waveId),
@@ -84,9 +90,17 @@ class PpdbRegistrationController extends Controller
             'verification_note' => $validated['verification_note'] ?? null,
         ]);
 
+        if ($ppdb->parent_email) {
+            try {
+                Mail::to($ppdb->parent_email)->send(new PpdbStatusMail($ppdb->fresh('wave')));
+            } catch (\Throwable $exception) {
+                report($exception);
+            }
+        }
+
         return redirect()
             ->route('admin.ppdb.show', $ppdb)
-            ->with('success', "Status pendaftaran {$ppdb->registration_number} diubah menjadi {$validated['status']}.");
+            ->with('success', "Status pendaftaran {$ppdb->registration_number} diubah menjadi {$validated['status']}.".($ppdb->parent_email ? ' Notifikasi email dikirim ke orang tua.' : ''));
     }
 
     public function destroy(PpdbRegistration $ppdb): RedirectResponse
@@ -102,5 +116,31 @@ class PpdbRegistrationController extends Controller
         return redirect()
             ->route('admin.ppdb.index')
             ->with('success', 'Data pendaftaran berhasil dihapus.');
+    }
+
+    /**
+     * One-click WhatsApp link with a prefilled status message, or null when no phone exists.
+     */
+    private function whatsAppLink(PpdbRegistration $ppdb): ?string
+    {
+        $digits = preg_replace('/\D+/', '', (string) $ppdb->parent_phone);
+
+        if ($digits === '') {
+            return null;
+        }
+
+        if (str_starts_with($digits, '0')) {
+            $digits = '62'.substr($digits, 1);
+        }
+
+        $status = PpdbRegistration::STATUSES[$ppdb->status] ?? $ppdb->status;
+
+        $message = "Yth. Bapak/Ibu {$ppdb->parent_name}, status pendaftaran PPDB {$ppdb->registration_number} ({$ppdb->student_name}) saat ini: {$status}.";
+
+        if ($ppdb->verification_note) {
+            $message .= " Catatan: {$ppdb->verification_note}";
+        }
+
+        return 'https://wa.me/'.$digits.'?text='.rawurlencode($message);
     }
 }

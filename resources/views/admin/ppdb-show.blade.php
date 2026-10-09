@@ -18,6 +18,7 @@
                     'Gelombang' => $registration->wave?->name ?? '—',
                     'Nama Orang Tua/Wali' => $registration->parent_name,
                     'No. HP Orang Tua/Wali' => $registration->parent_phone,
+                    'Email Orang Tua/Wali' => $registration->parent_email ?? '—',
                     'Mendaftar Pada' => $registration->created_at->translatedFormat('d F Y H:i'),
                 ];
             @endphp
@@ -93,6 +94,11 @@
                 Simpan Verifikasi
             </button>
         </form>
+        @if ($waLink)
+            <a href="{{ $waLink }}" target="_blank" class="mt-2 block rounded-2xl bg-emerald-600 px-6 py-3 text-center text-sm font-extrabold text-white transition hover:brightness-110">
+                Kirim WA ke Orang Tua
+            </a>
+        @endif
         <a href="{{ route('admin.ppdb.index') }}" class="mt-4 block text-center text-sm font-semibold text-slate-500 hover:text-navy-900">&larr; Kembali ke daftar</a>
     </div>
 </div>

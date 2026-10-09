@@ -9,6 +9,7 @@ use App\Models\Document;
 use App\Models\Extracurricular;
 use App\Models\Gallery;
 use App\Models\News;
+use App\Models\PpdbJalur;
 use App\Models\PpdbWave;
 use App\Models\Setting;
 use App\Models\Teacher;
@@ -76,6 +77,13 @@ class SchoolSeeder extends Seeder
             Document::updateOrCreate(
                 ['title' => $document['title']],
                 [...$document, 'sort_order' => $index + 1]
+            );
+        }
+
+        foreach (PpdbJalur::defaults() as $jalur) {
+            PpdbJalur::updateOrCreate(
+                ['slug' => $jalur['slug']],
+                [...$jalur, 'is_active' => true]
             );
         }
     }

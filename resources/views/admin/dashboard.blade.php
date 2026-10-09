@@ -87,6 +87,58 @@
     @endif
 </div>
 
+<div class="mt-5 rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+    <div class="flex flex-wrap items-center justify-between gap-2">
+        <h2 class="font-extrabold text-navy-900">Rekap PPDB</h2>
+        <a href="{{ route('admin.ppdb.index') }}" class="rounded-xl bg-navy-900 px-4 py-2 text-xs font-bold text-white transition hover:bg-navy-800">Kelola Pendaftar</a>
+    </div>
+
+    <div class="mt-4 flex flex-wrap gap-2">
+        @foreach ($statusLabels as $value => $label)
+            <a href="{{ route('admin.ppdb.index', ['status' => $value]) }}" class="rounded-full bg-slate-100 px-4 py-1.5 text-xs font-extrabold text-slate-700 transition hover:bg-slate-200">
+                {{ $label }}: {{ $ppdbByStatus[$value] ?? 0 }}
+            </a>
+        @endforeach
+    </div>
+
+    <div class="mt-5 grid gap-5 lg:grid-cols-2">
+        <div>
+            <h3 class="text-sm font-extrabold text-navy-900">Per Gelombang</h3>
+            <ul class="mt-3 flex flex-col gap-2.5">
+                @forelse ($ppdbWaves as $wave)
+                    @php($filled = $wave->quota > 0 ? min(100, $wave->registrations_count / $wave->quota * 100) : 0)
+                    <li>
+                        <a href="{{ route('admin.ppdb.index', ['ppdb_wave_id' => $wave->id]) }}" class="block rounded-2xl bg-slate-50 px-4 py-3 ring-1 ring-slate-100 transition hover:bg-slate-100">
+                            <span class="flex items-center justify-between gap-2 text-sm">
+                                <span class="font-bold text-navy-900">{{ $wave->name }}</span>
+                                <span class="font-mono text-xs text-slate-500">{{ $wave->registrations_count }}/{{ $wave->quota }}</span>
+                            </span>
+                            <span class="mt-2 block h-2 overflow-hidden rounded-full bg-slate-200">
+                                <span class="block h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-600" style="width: {{ $filled }}%"></span>
+                            </span>
+                        </a>
+                    </li>
+                @empty
+                    <li class="rounded-2xl border border-dashed border-slate-200 px-4 py-6 text-center text-sm text-slate-400">Belum ada gelombang. <a href="{{ route('admin.waves.create') }}" class="font-bold text-emerald-700">Buat gelombang</a>.</li>
+                @endforelse
+            </ul>
+        </div>
+        <div>
+            <h3 class="text-sm font-extrabold text-navy-900">Per Jalur</h3>
+            <ul class="mt-3 flex flex-col gap-2.5">
+                @forelse ($ppdbByJalur as $slug => $total)
+                    <li class="flex items-center justify-between gap-2 rounded-2xl bg-slate-50 px-4 py-3 ring-1 ring-slate-100">
+                        <span class="text-sm font-bold text-navy-900">{{ $jalurNames[$slug] ?? ucfirst($slug) }}</span>
+                        <span class="rounded-full bg-navy-900 px-3 py-1 text-xs font-extrabold text-white">{{ $total }}</span>
+                    </li>
+                @empty
+                    <li class="rounded-2xl border border-dashed border-slate-200 px-4 py-6 text-center text-sm text-slate-400">Belum ada pendaftar.</li>
+                @endforelse
+            </ul>
+        </div>
+    </div>
+</div>
+
 <div class="mt-5 grid gap-5 lg:grid-cols-2">
     <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
         <div class="flex items-center justify-between">

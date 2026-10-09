@@ -163,6 +163,13 @@
                 @error('parent_phone')<p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p>@enderror
             </div>
 
+            <div>
+                <label for="parent_email" class="mb-1.5 block text-sm font-bold text-navy-900">Email Orang Tua / Wali <span class="font-semibold text-slate-400">(opsional, untuk notifikasi status)</span></label>
+                <input type="email" name="parent_email" id="parent_email" value="{{ old('parent_email') }}" placeholder="nama@example.com"
+                       class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200">
+                @error('parent_email')<p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p>@enderror
+            </div>
+
             <div class="sm:col-span-2">
                 <label for="address" class="mb-1.5 block text-sm font-bold text-navy-900">Alamat Lengkap</label>
                 <textarea name="address" id="address" rows="3" required
@@ -201,6 +208,13 @@
                 <input type="file" name="photo" id="photo" accept=".jpg,.jpeg,.png"
                        class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-500">
                 @error('photo')<p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p>@enderror
+            </div>
+
+            <div class="sm:col-span-2">
+                <label for="captcha" class="mb-1.5 block text-sm font-bold text-navy-900">Verifikasi: berapa hasil <span class="font-mono text-base">{{ $captchaQuestion ?? '' }} = ?</span></label>
+                <input type="number" name="captcha" id="captcha" required placeholder="Jawaban angka"
+                       class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 sm:max-w-xs">
+                @error('captcha')<p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p>@enderror
             </div>
 
             <div class="sm:col-span-2">

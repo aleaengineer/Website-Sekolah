@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\AcademicCalendar;
 use App\Models\Agenda;
 use App\Models\Document;
+use App\Models\PpdbJalur;
 use App\Models\PpdbRegistration;
 use App\Models\PpdbWave;
 use App\Models\User;
@@ -37,6 +38,11 @@ class PpdbWaveAgendaDocumentTest extends TestCase
 
     private function ppdbPayload(array $overrides = []): array
     {
+        PpdbJalur::firstOrCreate(
+            ['slug' => 'zonasi'],
+            ['name' => 'Zonasi', 'is_active' => true, 'sort_order' => 1]
+        );
+
         return [
             'student_name' => 'Budi Santoso',
             'birth_place' => 'Pangandaran',
@@ -55,7 +61,7 @@ class PpdbWaveAgendaDocumentTest extends TestCase
     {
         $wave = $this->openWave();
 
-        $response = $this->post(route('ppdb.store'), $this->ppdbPayload(['ppdb_wave_id' => $wave->id]));
+        $response = $this->withSession(['captcha_ppdb' => 7])->post(route('ppdb.store'), $this->ppdbPayload(['ppdb_wave_id' => $wave->id, 'captcha' => 7]));
 
         $response->assertRedirect(route('ppdb.index'));
         $this->assertDatabaseHas('ppdb_registrations', [
@@ -72,7 +78,7 @@ class PpdbWaveAgendaDocumentTest extends TestCase
             'end_date' => now()->subWeek()->toDateString(),
         ]);
 
-        $this->post(route('ppdb.store'), $this->ppdbPayload(['ppdb_wave_id' => $wave->id]))
+        $this->withSession(['captcha_ppdb' => 7])->post(route('ppdb.store'), $this->ppdbPayload(['ppdb_wave_id' => $wave->id, 'captcha' => 7]))
             ->assertSessionHasErrors('ppdb_wave_id');
 
         $this->assertDatabaseCount('ppdb_registrations', 0);
@@ -88,7 +94,7 @@ class PpdbWaveAgendaDocumentTest extends TestCase
             'ppdb_wave_id' => $wave->id,
         ]);
 
-        $this->post(route('ppdb.store'), $this->ppdbPayload(['ppdb_wave_id' => $wave->id]))
+        $this->withSession(['captcha_ppdb' => 7])->post(route('ppdb.store'), $this->ppdbPayload(['ppdb_wave_id' => $wave->id, 'captcha' => 7]))
             ->assertSessionHasErrors('ppdb_wave_id');
 
         $this->assertDatabaseCount('ppdb_registrations', 1);

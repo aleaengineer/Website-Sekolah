@@ -21,9 +21,15 @@
                 <p class="mt-1 text-xs text-slate-500">Jl. Karanganyar No.127 Kalijati, Sidamulih, Pangandaran &bull; NPSN 20253310</p>
             </div>
 
-            <div class="mt-6 rounded-2xl bg-slate-50 p-5 text-center ring-1 ring-slate-200">
-                <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Nomor Pendaftaran</p>
-                <p class="mt-1 font-mono text-2xl font-extrabold tracking-wider text-navy-900">{{ $registration->registration_number }}</p>
+            <div class="mt-6 flex flex-col items-center gap-5 rounded-2xl bg-slate-50 p-5 text-center ring-1 ring-slate-200 sm:flex-row sm:text-left">
+                <div class="grow">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Nomor Pendaftaran</p>
+                    <p class="mt-1 font-mono text-2xl font-extrabold tracking-wider text-navy-900">{{ $registration->registration_number }}</p>
+                </div>
+                <div class="shrink-0 rounded-2xl bg-white p-3 ring-1 ring-slate-200">
+                    {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(120)->margin(1)->generate(route('ppdb.check', ['nomor' => $registration->registration_number])) !!}
+                    <p class="mt-1 text-[11px] font-bold text-slate-500">Pindai untuk cek status</p>
+                </div>
             </div>
 
             <dl class="mt-6 grid gap-x-8 gap-y-4 text-sm sm:grid-cols-2">
@@ -37,6 +43,7 @@
                         'Gelombang' => $registration->wave?->name ?? '—',
                         'Nama Orang Tua/Wali' => $registration->parent_name,
                         'No. HP Orang Tua/Wali' => $registration->parent_phone,
+                        'Email Orang Tua/Wali' => $registration->parent_email ?? '—',
                         'Waktu Mendaftar' => $registration->created_at->translatedFormat('d F Y H:i'),
                     ];
                 @endphp

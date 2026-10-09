@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Support\MathCaptcha;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -30,13 +31,19 @@ class StorePpdbRegistrationRequest extends FormRequest
             'previous_school' => ['required', 'string', 'max:150'],
             'parent_name' => ['required', 'string', 'max:100'],
             'parent_phone' => ['required', 'string', 'max:20'],
+            'parent_email' => ['nullable', 'email', 'max:150'],
             'address' => ['required', 'string', 'max:500'],
-            'jalur' => ['required', 'in:zonasi,afirmasi,prestasi,mutasi'],
+            'jalur' => ['required', 'string', 'exists:ppdb_jalurs,slug'],
             'ppdb_wave_id' => ['required', 'integer', 'exists:ppdb_waves,id'],
             'kk_file' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
             'akta_file' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
             'rapor_file' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
             'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+            'captcha' => ['required', 'integer', function ($attribute, $value, $fail): void {
+                if (! MathCaptcha::check('ppdb', $value)) {
+                    $fail('Jawaban captcha salah. Silakan coba lagi.');
+                }
+            }],
         ];
     }
 }

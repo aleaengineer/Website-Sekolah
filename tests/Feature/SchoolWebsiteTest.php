@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Announcement;
 use App\Models\Category;
 use App\Models\News;
+use App\Models\PpdbJalur;
 use App\Models\PpdbRegistration;
 use App\Models\PpdbWave;
 use Database\Seeders\SchoolSeeder;
@@ -85,6 +86,12 @@ class SchoolWebsiteTest extends TestCase
             'quota' => 100,
             'is_active' => true,
         ]);
+        PpdbJalur::create([
+            'name' => 'Zonasi',
+            'slug' => 'zonasi',
+            'is_active' => true,
+            'sort_order' => 1,
+        ]);
 
         $payload = [
             'student_name' => 'Budi Santoso',
@@ -97,9 +104,10 @@ class SchoolWebsiteTest extends TestCase
             'address' => 'Dusun Kalijati, Sidamulih',
             'jalur' => 'zonasi',
             'ppdb_wave_id' => $wave->id,
+            'captcha' => 7,
         ];
 
-        $response = $this->post(route('ppdb.store'), $payload);
+        $response = $this->withSession(['captcha_ppdb' => 7])->post(route('ppdb.store'), $payload);
 
         $response->assertRedirect(route('ppdb.index'));
         $response->assertSessionHas('success');
@@ -128,17 +136,19 @@ class SchoolWebsiteTest extends TestCase
             'address',
             'jalur',
             'ppdb_wave_id',
+            'captcha',
         ]);
         $this->assertDatabaseCount('ppdb_registrations', 0);
     }
 
     public function test_contact_message_is_stored(): void
     {
-        $response = $this->post(route('contact.store'), [
+        $response = $this->withSession(['captcha_contact' => 5])->post(route('contact.store'), [
             'name' => 'Siti Aminah',
             'contact' => 'siti@example.com',
             'subject' => 'Info PPDB',
             'message' => 'Kapan pendaftaran dibuka?',
+            'captcha' => 5,
         ]);
 
         $response->assertRedirect(route('contact.index'));

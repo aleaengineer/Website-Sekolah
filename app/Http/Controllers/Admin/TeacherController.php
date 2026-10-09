@@ -7,6 +7,7 @@ use App\Exports\TeachersTemplateExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreTeacherRequest;
 use App\Imports\TeachersImport;
+use App\Models\ActivityLog;
 use App\Models\Teacher;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -72,6 +73,8 @@ class TeacherController extends Controller
 
     public function export(): BinaryFileResponse
     {
+        ActivityLog::record(ActivityLog::ACTION_EXPORT, 'mengekspor data guru ke Excel');
+
         return Excel::download(new TeachersExport, 'data-guru-'.now()->format('Y-m-d').'.xlsx');
     }
 
@@ -83,6 +86,8 @@ class TeacherController extends Controller
 
         $import = new TeachersImport;
         Excel::import($import, $validated['import']);
+
+        ActivityLog::record(ActivityLog::ACTION_IMPORT, "mengimpor data guru: {$import->imported} baru, {$import->skipped} dilewati");
 
         $message = "{$import->imported} data guru baru ditambahkan, {$import->skipped} baris dilewati (kosong/nama sudah ada).";
 

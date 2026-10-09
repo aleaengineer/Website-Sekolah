@@ -35,6 +35,7 @@ class PpdbRegistration extends Model
         'previous_school',
         'parent_name',
         'parent_phone',
+        'parent_email',
         'address',
         'jalur',
         'ppdb_wave_id',
@@ -87,5 +88,13 @@ class PpdbRegistration extends Model
     public function wave(): BelongsTo
     {
         return $this->belongsTo(PpdbWave::class, 'ppdb_wave_id');
+    }
+
+    /**
+     * @return BelongsTo<PpdbJalur, $this>
+     */
+    public function track(): BelongsTo
+    {
+        return $this->belongsTo(PpdbJalur::class, 'jalur', 'slug');
     }
 }

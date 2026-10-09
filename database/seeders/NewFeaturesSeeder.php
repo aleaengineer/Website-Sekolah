@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\AcademicCalendar;
 use App\Models\Agenda;
+use App\Models\PpdbJalur;
 use App\Models\PpdbWave;
 use Illuminate\Database\Seeder;
 
@@ -35,6 +36,13 @@ class NewFeaturesSeeder extends Seeder
             ],
         ] as $wave) {
             PpdbWave::updateOrCreate(['name' => $wave['name']], $wave);
+        }
+
+        foreach (PpdbJalur::defaults() as $jalur) {
+            PpdbJalur::updateOrCreate(
+                ['slug' => $jalur['slug']],
+                [...$jalur, 'is_active' => true]
+            );
         }
 
         Agenda::updateOrCreate(['slug' => 'mpls'], [

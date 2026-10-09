@@ -35,6 +35,10 @@
                     {{ $link['label'] }}
                 </a>
             @endforeach
+            <form action="{{ route('search') }}" method="GET" class="ml-1 flex items-center" role="search">
+                <input type="text" name="q" value="{{ request('q') }}" required minlength="2" maxlength="100" placeholder="Cari..."
+                       class="w-32 rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none transition focus:w-44 focus:border-emerald-500">
+            </form>
             <a href="{{ route('ppdb.index') }}"
                class="ml-2 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 px-5 py-2.5 text-sm font-bold text-navy-950 shadow transition hover:brightness-105">
                 PPDB
@@ -48,6 +52,10 @@
 
     <nav id="mobile-nav" class="hidden border-t border-slate-200 bg-white px-4 py-3 lg:hidden" aria-label="Navigasi seluler">
         <div class="flex flex-col gap-1">
+            <form action="{{ route('search') }}" method="GET" class="mb-1" role="search">
+                <input type="text" name="q" value="{{ request('q') }}" required minlength="2" maxlength="100" placeholder="Cari berita, agenda, guru..."
+                       class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none transition focus:border-emerald-500">
+            </form>
             @foreach ($links as $link)
                 <a href="{{ route($link['route']) }}"
                    class="rounded-xl px-4 py-2.5 text-sm font-semibold {{ request()->routeIs($link['match']) ? 'bg-navy-900 text-white' : 'text-slate-700 hover:bg-slate-100' }}">

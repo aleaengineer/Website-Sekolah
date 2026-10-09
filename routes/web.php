@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\AcademicController;
 use App\Http\Controllers\Admin\AcademicCalendarController as AdminAcademicCalendarController;
+use App\Http\Controllers\Admin\ActivityLogController as AdminActivityLogController;
 use App\Http\Controllers\Admin\AgendaController as AdminAgendaController;
 use App\Http\Controllers\Admin\AnnouncementController as AdminAnnouncementController;
+use App\Http\Controllers\Admin\BackupController as AdminBackupController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\ContactMessageController as AdminContactMessageController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -11,6 +13,7 @@ use App\Http\Controllers\Admin\DocumentController as AdminDocumentController;
 use App\Http\Controllers\Admin\ExtracurricularController as AdminExtracurricularController;
 use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
+use App\Http\Controllers\Admin\PpdbJalurController as AdminPpdbJalurController;
 use App\Http\Controllers\Admin\PpdbRegistrationController as AdminPpdbRegistrationController;
 use App\Http\Controllers\Admin\PpdbWaveController as AdminPpdbWaveController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
@@ -27,6 +30,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PpdbController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 
@@ -45,6 +49,8 @@ Route::get('/agenda/{agenda:slug}', [AgendaController::class, 'show'])->name('ag
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 
 Route::get('/galeri', GalleryController::class)->name('gallery');
+
+Route::get('/cari', [SearchController::class, 'index'])->name('search');
 
 Route::get('/ppdb', [PpdbController::class, 'index'])->name('ppdb.index');
 Route::post('/ppdb', [PpdbController::class, 'store'])->name('ppdb.store');
@@ -122,8 +128,15 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function (): v
             ->names('waves')
             ->except(['show']);
 
+        Route::resource('jalur', AdminPpdbJalurController::class)
+            ->parameters(['jalur' => 'jalur'])
+            ->names('jalurs')
+            ->except(['show']);
+
         Route::get('/kategori', [AdminCategoryController::class, 'index'])->name('categories.index');
         Route::post('/kategori', [AdminCategoryController::class, 'store'])->name('categories.store');
+        Route::get('/kategori/{category}/edit', [AdminCategoryController::class, 'edit'])->name('categories.edit');
+        Route::put('/kategori/{category}', [AdminCategoryController::class, 'update'])->name('categories.update');
         Route::delete('/kategori/{category}', [AdminCategoryController::class, 'destroy'])->name('categories.destroy');
 
         Route::get('/ppdb', [AdminPpdbRegistrationController::class, 'index'])->name('ppdb.index');
@@ -147,5 +160,13 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function (): v
             ->parameters(['pengguna' => 'user'])
             ->names('users')
             ->except(['show']);
+
+        Route::get('/log-aktivitas', [AdminActivityLogController::class, 'index'])->name('activity-logs.index');
+
+        Route::get('/backup', [AdminBackupController::class, 'index'])->name('backups.index');
+        Route::post('/backup', [AdminBackupController::class, 'store'])->name('backups.store');
+        Route::post('/backup/restore', [AdminBackupController::class, 'restore'])->name('backups.restore');
+        Route::get('/backup/unduh/{file}', [AdminBackupController::class, 'download'])->name('backups.download');
+        Route::delete('/backup/{file}', [AdminBackupController::class, 'destroy'])->name('backups.destroy');
     });
 });

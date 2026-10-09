@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use App\Models\Setting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -94,6 +95,8 @@ class SettingController extends Controller
         foreach ($validated['settings'] as $key => $value) {
             Setting::updateOrCreate(['key' => $key], ['value' => $value]);
         }
+
+        ActivityLog::record(ActivityLog::ACTION_UPDATE, 'memperbarui '.count($validated['settings']).' pengaturan situs');
 
         return redirect()
             ->route('admin.settings')

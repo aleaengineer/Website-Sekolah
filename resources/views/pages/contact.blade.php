@@ -65,6 +65,13 @@
                 </div>
 
                 <div>
+                    <label for="captcha" class="mb-1.5 block text-sm font-bold text-navy-900">Verifikasi: berapa hasil <span class="font-mono text-base">{{ $captchaQuestion ?? '' }} = ?</span></label>
+                    <input type="number" name="captcha" id="captcha" required placeholder="Jawaban angka"
+                           class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 sm:max-w-xs">
+                    @error('captcha')<p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p>@enderror
+                </div>
+
+                <div>
                     <button type="submit" class="rounded-2xl bg-navy-900 px-8 py-3.5 text-sm font-extrabold text-white shadow transition hover:bg-navy-800">
                         Kirim Pesan
                     </button>

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\PpdbJalur;
 use App\Models\PpdbRegistration;
 use App\Models\PpdbWave;
 use App\Models\User;
@@ -32,6 +33,11 @@ class PpdbDocumentsTest extends TestCase
 
     private function ppdbPayload(array $overrides = []): array
     {
+        PpdbJalur::firstOrCreate(
+            ['slug' => 'zonasi'],
+            ['name' => 'Zonasi', 'is_active' => true, 'sort_order' => 1]
+        );
+
         return [
             'student_name' => 'Budi Santoso',
             'birth_place' => 'Pangandaran',
@@ -51,8 +57,8 @@ class PpdbDocumentsTest extends TestCase
         Storage::fake('public');
         $wave = $this->openWave();
 
-        $response = $this->post(route('ppdb.store'), [
-            ...$this->ppdbPayload(['ppdb_wave_id' => $wave->id]),
+        $response = $this->withSession(['captcha_ppdb' => 7])->post(route('ppdb.store'), [
+            ...$this->ppdbPayload(['ppdb_wave_id' => $wave->id, 'captcha' => 7]),
             'kk_file' => UploadedFile::fake()->create('kk.pdf', 200, 'application/pdf'),
             'akta_file' => UploadedFile::fake()->image('akta.jpg'),
             'rapor_file' => UploadedFile::fake()->create('rapor.pdf', 200, 'application/pdf'),
@@ -76,7 +82,7 @@ class PpdbDocumentsTest extends TestCase
     {
         $wave = $this->openWave();
 
-        $this->post(route('ppdb.store'), $this->ppdbPayload(['ppdb_wave_id' => $wave->id]))
+        $this->withSession(['captcha_ppdb' => 7])->post(route('ppdb.store'), $this->ppdbPayload(['ppdb_wave_id' => $wave->id, 'captcha' => 7]))
             ->assertRedirect(route('ppdb.index'));
 
         $registration = PpdbRegistration::firstOrFail();
@@ -89,8 +95,8 @@ class PpdbDocumentsTest extends TestCase
         Storage::fake('public');
         $wave = $this->openWave();
 
-        $this->post(route('ppdb.store'), [
-            ...$this->ppdbPayload(['ppdb_wave_id' => $wave->id]),
+        $this->withSession(['captcha_ppdb' => 7])->post(route('ppdb.store'), [
+            ...$this->ppdbPayload(['ppdb_wave_id' => $wave->id, 'captcha' => 7]),
             'kk_file' => UploadedFile::fake()->create('kk.exe', 200, 'application/octet-stream'),
         ])->assertSessionHasErrors('kk_file');
 

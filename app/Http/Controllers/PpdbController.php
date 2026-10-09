@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePpdbRegistrationRequest;
+use App\Models\PpdbJalur;
 use App\Models\PpdbRegistration;
 use App\Models\PpdbWave;
+use App\Support\MathCaptcha;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -16,14 +18,10 @@ class PpdbController extends Controller
         $waves = PpdbWave::active()->withCount('registrations')->get();
 
         return view('pages.ppdb', [
-            'jalurList' => [
-                'zonasi' => 'Zonasi',
-                'afirmasi' => 'Afirmasi',
-                'prestasi' => 'Prestasi',
-                'mutasi' => 'Perpindahan Tugas Orang Tua',
-            ],
+            'jalurList' => PpdbJalur::active()->ordered()->pluck('name', 'slug')->all(),
             'waves' => $waves,
             'openWaves' => $waves->filter(fn (PpdbWave $wave) => $wave->isOpen() && ! $wave->isFull()),
+            'captchaQuestion' => MathCaptcha::generate('ppdb'),
         ]);
     }
 
@@ -54,6 +52,7 @@ class PpdbController extends Controller
                 'previous_school',
                 'parent_name',
                 'parent_phone',
+                'parent_email',
                 'address',
                 'jalur',
                 'ppdb_wave_id',
@@ -61,6 +60,8 @@ class PpdbController extends Controller
             ...$this->uploadedFiles($request),
             'registration_number' => PpdbRegistration::generateNumber(),
         ]);
+
+        MathCaptcha::forget('ppdb');
 
         return redirect()
             ->route('ppdb.index')
