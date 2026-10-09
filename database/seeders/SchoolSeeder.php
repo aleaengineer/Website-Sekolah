@@ -97,6 +97,7 @@ class SchoolSeeder extends Seeder
     private function settings(): array
     {
         return [
+            'school.logo' => '',
             'school.name' => 'SMP Negeri Satu Atap I Sidamulih',
             'school.short_name' => 'SMPN Satu Atap I Sidamulih',
             'school.npsn' => '20253310',

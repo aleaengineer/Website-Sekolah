@@ -7,6 +7,7 @@ use App\Models\ActivityLog;
 use App\Models\Setting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class SettingController extends Controller
@@ -25,6 +26,7 @@ class SettingController extends Controller
             'Identitas Sekolah' => [
                 'label' => 'Identitas Sekolah',
                 'fields' => [
+                    'school.logo' => ['label' => 'Logo Sekolah', 'type' => 'image', 'hint' => 'PNG/JPG transparan bila ada, maks. 2 MB. Kosongkan untuk memakai logo bawaan.'],
                     'school.name' => $text('Nama Sekolah'),
                     'school.short_name' => $text('Nama Singkat'),
                     'school.npsn' => $text('NPSN'),
@@ -90,10 +92,24 @@ class SettingController extends Controller
         $validated = $request->validate([
             'settings' => ['required', 'array'],
             'settings.*' => ['nullable', 'string', 'max:5000'],
+            'logo' => ['nullable', 'image', 'max:2048'],
         ]);
 
         foreach ($validated['settings'] as $key => $value) {
             Setting::updateOrCreate(['key' => $key], ['value' => $value]);
+        }
+
+        if ($request->hasFile('logo')) {
+            $old = Setting::value('school.logo');
+
+            if ($old) {
+                Storage::disk('public')->delete($old);
+            }
+
+            Setting::updateOrCreate(
+                ['key' => 'school.logo'],
+                ['value' => $request->file('logo')->store('settings', 'public')]
+            );
         }
 
         ActivityLog::record(ActivityLog::ACTION_UPDATE, 'memperbarui '.count($validated['settings']).' pengaturan situs');

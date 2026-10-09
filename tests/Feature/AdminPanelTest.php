@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\News;
+use App\Models\Setting;
 use App\Models\StudentStatistic;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -149,6 +150,30 @@ class AdminPanelTest extends TestCase
             'key' => 'school.phone',
             'value' => '(0265) 123456',
         ]);
+    }
+
+    public function test_admin_can_upload_school_logo(): void
+    {
+        Storage::fake('public');
+
+        $this->actingAs($this->admin())->put(route('admin.settings.update'), [
+            'settings' => ['school.phone' => '(0265) 123456'],
+            'logo' => UploadedFile::fake()->image('logo-sekolah.png'),
+        ])->assertRedirect(route('admin.settings'));
+
+        $path = Setting::value('school.logo');
+        $this->assertNotEmpty($path);
+        Storage::disk('public')->assertExists($path);
+
+        $this->get(route('home'))->assertOk()->assertSee($path, false);
+    }
+
+    public function test_school_logo_rejects_non_image(): void
+    {
+        $this->actingAs($this->admin())->put(route('admin.settings.update'), [
+            'settings' => ['school.phone' => '(0265) 123456'],
+            'logo' => UploadedFile::fake()->create('logo.exe', 100, 'application/octet-stream'),
+        ])->assertSessionHasErrors('logo');
     }
 
     public function test_admin_can_import_teachers_from_excel(): void

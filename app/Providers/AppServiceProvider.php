@@ -40,7 +40,7 @@ class AppServiceProvider extends ServiceProvider
             $model::observe(ActivityObserver::class);
         }
 
-        View::composer(['layouts.*', 'pages.*'], function ($view): void {
+        View::composer('*', function ($view): void {
             $view->with('settings', Setting::pluck('value', 'key')->all());
         });
 

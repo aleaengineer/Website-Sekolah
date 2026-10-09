@@ -4,7 +4,7 @@
 @section('heading', 'Pengaturan Situs')
 
 @section('content')
-<form action="{{ route('admin.settings.update') }}" method="POST" class="flex flex-col gap-6">
+<form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-6">
     @csrf
     @method('PUT')
 
@@ -20,6 +20,12 @@
                         @if ($field['type'] === 'textarea')
                             <textarea name="settings[{{ $key }}]" id="setting-{{ $key }}" rows="4"
                                       class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200">{{ old('settings.'.$key, $values[$key] ?? '') }}</textarea>
+                        @elseif ($field['type'] === 'image')
+                            @if (! empty($values[$key] ?? null))
+                                <img src="{{ asset('storage/'.($values[$key] ?? '')) }}" alt="Logo sekolah saat ini" class="mb-3 h-24 w-24 rounded-2xl bg-slate-50 object-contain p-2 ring-1 ring-slate-200">
+                            @endif
+                            <input type="file" name="logo" id="setting-{{ $key }}" accept="image/*"
+                                   class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-500">
                         @elseif ($field['type'] === 'select')
                             <select name="settings[{{ $key }}]" id="setting-{{ $key }}"
                                     class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200">
