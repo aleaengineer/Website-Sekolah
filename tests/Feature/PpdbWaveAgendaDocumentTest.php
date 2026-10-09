@@ -174,6 +174,22 @@ class PpdbWaveAgendaDocumentTest extends TestCase
         $this->get(route('agendas.show', $draft))->assertNotFound();
     }
 
+    public function test_agenda_html_renders_unescaped(): void
+    {
+        Agenda::create([
+            'title' => 'Agenda Berformat',
+            'slug' => 'agenda-berformat',
+            'description' => '<p><strong>Catat</strong> tanggalnya:</p><ul><li>Gladi bersih</li><li>Acara puncak</li></ul>',
+            'start_at' => now()->addDays(3),
+            'is_published' => true,
+        ]);
+
+        $this->get(route('agendas.show', 'agenda-berformat'))
+            ->assertOk()
+            ->assertSee('<strong>Catat</strong>', false)
+            ->assertSee('<ul>', false);
+    }
+
     public function test_academic_page_shows_calendar_and_documents(): void
     {
         AcademicCalendar::create([

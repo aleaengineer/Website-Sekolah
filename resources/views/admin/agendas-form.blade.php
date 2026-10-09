@@ -20,7 +20,7 @@
 
     <div>
         <label for="description" class="mb-1.5 block text-sm font-bold text-navy-900">Deskripsi</label>
-        <textarea name="description" id="description" rows="5" required
+        <textarea name="description" id="description" rows="5"
                   class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200">{{ old('description', $agenda->description ?? '') }}</textarea>
         @error('description')<p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p>@enderror
     </div>
@@ -72,3 +72,7 @@
     </div>
 </form>
 @endsection
+
+@push('admin-scripts')
+@include('admin.partials.editor', ['field' => 'description'])
+@endpush

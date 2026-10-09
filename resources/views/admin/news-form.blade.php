@@ -46,8 +46,8 @@
         </div>
 
         <div>
-            <label for="body" class="mb-1.5 block text-sm font-bold text-navy-900">Isi Berita <span class="font-normal text-slate-400">(boleh memakai tag HTML paragraf)</span></label>
-            <textarea name="body" id="body" rows="10" required
+            <label for="body" class="mb-1.5 block text-sm font-bold text-navy-900">Isi Berita</label>
+            <textarea name="body" id="body" rows="10"
                       class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200">{{ old('body', $article->body ?? '') }}</textarea>
             @error('body')<p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p>@enderror
         </div>
@@ -86,3 +86,7 @@
     </div>
 </form>
 @endsection
+
+@push('admin-scripts')
+@include('admin.partials.editor', ['field' => 'body'])
+@endpush

@@ -55,19 +55,6 @@
 </form>
 @endsection
 
-@push('admin-styles')
-<style>
-    .ck-editor__editable_inline { min-height: 220px; }
-</style>
-@endpush
-
 @push('admin-scripts')
-<script src="{{ asset('vendor/ckeditor/ckeditor.js') }}"></script>
-<script>
-    ClassicEditor
-        .create(document.querySelector('#content'), {
-            toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'blockQuote', 'undo', 'redo'],
-        })
-        .catch(function (error) { console.error(error); });
-</script>
+@include('admin.partials.editor', ['field' => 'content'])
 @endpush

@@ -24,7 +24,7 @@ class StoreAgendaRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string', 'max:200'],
-            'description' => ['required', 'string', 'max:10000'],
+            'description' => ['required', 'string', 'max:20000'],
             'location' => ['nullable', 'string', 'max:200'],
             'start_at' => ['required', 'date'],
             'end_at' => ['nullable', 'date', 'after_or_equal:start_at'],

@@ -22,7 +22,7 @@
                     @if ($agenda->location)
                         <p class="mt-1 text-sm text-slate-500">{{ $agenda->location }}</p>
                     @endif
-                    <p class="mt-2 text-sm leading-relaxed text-slate-600">{{ \Illuminate\Support\Str::limit($agenda->description, 140) }}</p>
+                    <p class="mt-2 text-sm leading-relaxed text-slate-600">{{ \Illuminate\Support\Str::limit(strip_tags($agenda->description), 140) }}</p>
                 </a>
             @endforeach
         </div>
@@ -39,7 +39,7 @@
                     <div class="p-6">
                         <p class="text-xs font-bold uppercase tracking-widest text-emerald-700">{{ $agenda->start_at->translatedFormat('d M Y') }}</p>
                         <h3 class="mt-2 font-extrabold text-navy-900 group-hover:underline">{{ \Illuminate\Support\Str::limit($agenda->title, 60) }}</h3>
-                        <p class="mt-2 text-sm text-slate-600">{{ \Illuminate\Support\Str::limit($agenda->description, 100) }}</p>
+                        <p class="mt-2 text-sm text-slate-600">{{ \Illuminate\Support\Str::limit(strip_tags($agenda->description), 100) }}</p>
                     </div>
                 </a>
             @empty

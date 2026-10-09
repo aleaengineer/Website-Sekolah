@@ -23,8 +23,8 @@
         @if ($agenda->cover_image)
             <img src="{{ asset('storage/'.$agenda->cover_image) }}" alt="{{ $agenda->title }}" class="mb-6 w-full rounded-2xl object-cover ring-1 ring-slate-100">
         @endif
-        <div class="prose max-w-none text-slate-700">
-            <p class="whitespace-pre-line leading-relaxed">{{ $agenda->description }}</p>
+        <div class="rich-text max-w-none text-slate-700">
+            {!! $agenda->description !!}
         </div>
     </article>
 
