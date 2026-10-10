@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DocumentController as AdminDocumentController;
 use App\Http\Controllers\Admin\ExtracurricularController as AdminExtracurricularController;
 use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
+use App\Http\Controllers\Admin\HeroSlideController as AdminHeroSlideController;
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\Admin\PpdbJalurController as AdminPpdbJalurController;
 use App\Http\Controllers\Admin\PpdbRegistrationController as AdminPpdbRegistrationController;
@@ -152,6 +153,11 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function (): v
         Route::resource('dokumen', AdminDocumentController::class)
             ->parameters(['dokumen' => 'document'])
             ->names('documents')
+            ->except(['show']);
+
+        Route::resource('hero', AdminHeroSlideController::class)
+            ->parameters(['hero' => 'hero'])
+            ->names('heroes')
             ->except(['show']);
 
         Route::get('/kategori', [AdminCategoryController::class, 'index'])->name('categories.index');

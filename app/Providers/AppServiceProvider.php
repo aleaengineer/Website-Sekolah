@@ -10,6 +10,7 @@ use App\Models\ContactMessage;
 use App\Models\Document;
 use App\Models\Extracurricular;
 use App\Models\Gallery;
+use App\Models\HeroSlide;
 use App\Models\News;
 use App\Models\PpdbRegistration;
 use App\Models\PpdbWave;
@@ -36,7 +37,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        foreach ([AcademicCalendar::class, Agenda::class, Announcement::class, Category::class, ContactMessage::class, Document::class, Extracurricular::class, Gallery::class, News::class, PpdbRegistration::class, PpdbWave::class, StudentStatistic::class, Teacher::class, User::class] as $model) {
+        foreach ([AcademicCalendar::class, Agenda::class, Announcement::class, Category::class, ContactMessage::class, Document::class, Extracurricular::class, Gallery::class, HeroSlide::class, News::class, PpdbRegistration::class, PpdbWave::class, StudentStatistic::class, Teacher::class, User::class] as $model) {
             $model::observe(ActivityObserver::class);
         }
 
